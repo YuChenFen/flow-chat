@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' http://localhost:11434 http://127.0.0.1:8008 https://api.siliconflow.cn https://open.bigmodel.cn; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http://127.0.0.1:8008" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="back">
+            <div class="card">
+                <div class="card-main" type="login">  
+                    <h1>登录</h1>
+                    <p>Welcome Back!</p>
+                    <div class="form">
+                        <input type="text" placeholder="账号" name="account"/></input>
+                        <input type="password" placeholder="密码" name="password"></input>
+                    </div>
+                    <button type="submit">
+                        <span class="loader"></span>
+                        <span class="label">登录</span>
+                    </button>
+                    <footer>没有账号? 立即注册</footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/login/main.js"></script>
+</body>
+
+</html>

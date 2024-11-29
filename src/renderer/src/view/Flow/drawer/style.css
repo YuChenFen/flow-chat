@@ -1,0 +1,29 @@
+.item-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .item-title{
+        border-bottom: 1px solid #636363;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        margin: 10px 0 5px 0;
+    }
+
+    .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .mx-1 {
+            width: 6rem;
+            margin: auto 0;
+        }
+        .lable-top{
+            margin: 7.667px 0 auto 0;
+        }
+        
+    }
+}

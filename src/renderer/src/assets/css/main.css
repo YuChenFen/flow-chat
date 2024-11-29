@@ -1,0 +1,45 @@
+@import url('./base.css');
+@import url('./markdown.css');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "ZhuqueFangsong-Regular", "Microsoft YaHei";
+  font-weight: 500;
+}
+
+.user-select-none {
+  user-select: none;
+}
+
+html{
+  font-size: 16px;  
+}
+
+#app {
+  overflow: hidden;
+}
+
+.el-drawer__body {
+  background-color: var(--sidebar-background-color);
+  color: var(--sidebar-color);
+  user-select: none;
+}
+.el-drawer{
+  height: calc(100vh - var(--titlebar-height)) !important;
+  top: var(--titlebar-height) !important;
+}
+.el-message{
+  user-select: none;
+}
+.el-message-box__message{
+  width: 100%;
+}
+.el-badge__content{
+  font-family: Inter, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
+}
+:root{
+  --el-menu-base-level-padding: 10px !important;
+  --el-menu-icon-width: 36px !important;
+}
