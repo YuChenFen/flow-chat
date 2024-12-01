@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
 import SSEEvents from '../api/sse'
 import { queryUser } from '../api/user'
-import { ref, watchEffect } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { getUnreadMessage } from '../api/message'
 
 export const useChatStore = defineStore('chat', () => {
     const chatList = ref([])
     const unreadMessageCount = ref(0)
     let currentChat
-    const userAccount = sessionStorage.getItem('userAccount')
+    let userAccount = sessionStorage.getItem('userAccount')
 
-    SSEEvents.addEventListener('SSE: message', async (data) => {
+    SSEEvents.addEventListener('SSE: message-text', async (data) => {
         const { fromUserId, content } = data
         addUserMessage(fromUserId, content)
     })
@@ -45,6 +45,7 @@ export const useChatStore = defineStore('chat', () => {
     }
 
     async function initChatList() {
+        userAccount = sessionStorage.getItem('userAccount')
         if (chatList.value.length === 0) {
             try {
                 // eslint-disable-next-line no-unsafe-optional-chaining
@@ -64,7 +65,11 @@ export const useChatStore = defineStore('chat', () => {
             }
         }
     }
-    initChatList()
+    setTimeout(() => {
+        nextTick(() => {
+            initChatList()
+        })
+    }, 500)
     async function updateUnreadMessageCount() {
         unreadMessageCount.value = 0
         for (let i = 0; i < chatList.value.length; i++) {
@@ -77,13 +82,24 @@ export const useChatStore = defineStore('chat', () => {
     function setChatList(list) {
         chatList.value = list
     }
-    watchEffect(() => {
-        window.electronAPI?.writeFile({
-            filePath: `./chat/${userAccount}.json`,
-            content: JSON.stringify(chatList.value)
-        })
-        updateUnreadMessageCount()
-    })
+    watch(
+        () => chatList.value,
+        () => {
+            const navigation = performance.getEntriesByType('navigation')[0]
+            if (navigation.type === 'reload' && !navigation.flag) {
+                navigation.flag = true
+                return
+            }
+            window.electronAPI?.writeFile({
+                filePath: `./chat/${userAccount}.json`,
+                content: JSON.stringify(chatList.value)
+            })
+            updateUnreadMessageCount()
+        },
+        {
+            deep: true
+        }
+    )
 
     function getCurrentChat() {
         return currentChat
@@ -92,5 +108,12 @@ export const useChatStore = defineStore('chat', () => {
         currentChat = chat
     }
 
-    return { chatList, unreadMessageCount, setChatList, getCurrentChat, setCurrentChat }
+    return {
+        chatList,
+        unreadMessageCount,
+        initChatList,
+        setChatList,
+        getCurrentChat,
+        setCurrentChat
+    }
 })

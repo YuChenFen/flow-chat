@@ -37,6 +37,61 @@
                     <!-- <el-option label="无布局" value="none" /> -->
                 </el-select>
             </div>
+            <div class="card">
+                <el-text size="large" class="title">图例位置</el-text>
+                <el-text class="description">图例的位置（对应的空值为null）</el-text>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+                    <el-autocomplete
+                        v-model="legendTop"
+                        :fetch-suggestions="legendQuerySearch"
+                        :trigger-on-focus="false"
+                        clearable
+                        placeholder="top"
+                        style="width: 30%; min-width: 300px"
+                        @change="(val) => (config.chart.legend.top = val)"
+                    />
+                    <el-autocomplete
+                        v-model="legendBottom"
+                        :fetch-suggestions="legendQuerySearch"
+                        :trigger-on-focus="false"
+                        clearable
+                        placeholder="bottom"
+                        style="width: 30%; min-width: 300px"
+                        @change="(val) => (config.chart.legend.bottom = val)"
+                    />
+                    <el-autocomplete
+                        v-model="legendLeft"
+                        :fetch-suggestions="legendQuerySearch"
+                        :trigger-on-focus="false"
+                        clearable
+                        placeholder="left"
+                        style="width: 30%; min-width: 300px"
+                        @change="(val) => (config.chart.legend.left = val)"
+                    />
+                    <el-autocomplete
+                        v-model="legendRight"
+                        :fetch-suggestions="legendQuerySearch"
+                        :trigger-on-focus="false"
+                        clearable
+                        placeholder="right"
+                        style="width: 30%; min-width: 300px"
+                        @change="(val) => (config.chart.legend.right = val)"
+                    />
+                </div>
+            </div>
+            <div class="card">
+                <el-text size="large" class="title">图例布局</el-text>
+                <el-text class="description">图例的布局方向</el-text>
+                <el-select
+                    v-model="legendOrient"
+                    placeholder="选择图例方向"
+                    style="width: 240px"
+                    @change="(val) => (config.chart.legend.orient = val)"
+                >
+                    <el-option label="水平" value="horizontal" />
+                    <el-option label="垂直" value="vertical" />
+                </el-select>
+            </div>
             <h3 id="力引导布局">力引导布局</h3>
             <div class="card">
                 <el-text size="large" class="title">引力因子</el-text>
@@ -103,9 +158,19 @@ const forceGravity = ref(config.chart.force.gravity)
 const forceRepulsion = ref(config.chart.force.repulsion)
 const forceMinEdgeLength = ref(config.chart.force.edgeLength.min)
 const forceMaxEdgeLength = ref(config.chart.force.edgeLength.max)
+const legendTop = ref(config.chart.legend.top)
+const legendLeft = ref(config.chart.legend.left)
+const legendRight = ref(config.chart.legend.right)
+const legendBottom = ref(config.chart.legend.bottom)
+const legendOrient = ref(config.chart.legend.orient)
 
 const handleClick = (e) => {
     e.preventDefault()
+}
+
+function legendQuerySearch(queryString, cb) {
+    const results = 'center'.startsWith(queryString) ? [{ value: 'center' }] : []
+    cb(results)
 }
 </script>
 

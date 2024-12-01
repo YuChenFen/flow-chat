@@ -5,9 +5,11 @@ import Tools from '../../assets/js/tools'
 import Template from './template'
 import { marked } from 'marked'
 import config from '@renderer/assets/js/config'
+import { send as SSESend } from '../../api/sse'
 
 class Chart {
     static instance
+    static collaborationRoomKey = ''
 
     constructor(domId, isReLoad = false) {
         if (Chart.instance && !isReLoad) {
@@ -54,6 +56,11 @@ class Chart {
             legend: [
                 {
                     data: categories.map((x) => x.name),
+                    bottom: config.chart.legend.bottom === '' ? null : config.chart.legend.bottom,
+                    left: config.chart.legend.left === '' ? null : config.chart.legend.left,
+                    right: config.chart.legend.right === '' ? null : config.chart.legend.right,
+                    top: config.chart.legend.top === '' ? null : config.chart.legend.top,
+                    orient: config.chart.legend.orient,
                     icon: 'circle',
                     textStyle: {
                         color: '#666',
@@ -190,248 +197,10 @@ class Chart {
                                 ]
                             })
                         }
-                    },
-                    myUploadText: {
-                        show: true,
-                        title: '由文本生成',
-                        icon: 'image:///src/assets/image/text.svg',
-                        onclick: async () => {
-                            // 打开文件对话框
-                            const text = await Tools.openTextFile([
-                                {
-                                    description: '文本',
-                                    accept: {
-                                        'text/plain': ['.txt']
-                                    }
-                                }
-                            ])
-                            const loadMessage = ElMessage({
-                                message: '正在生成中...',
-                                duration: 0,
-                                offset: 46
-                            })
-                            try {
-                                // 一起生成实体与关系
-                                const entityRelationshipTemplate =
-                                    Template.entityRelationshipExtraction(text)
-                                const entityRelationshipText = await LLM.chat(
-                                    entityRelationshipTemplate
-                                )
-                                console.log(entityRelationshipText)
-                                entityRelationshipTemplate.push({
-                                    role: 'assistant',
-                                    content: entityRelationshipText
-                                })
-                                const { entity, relationship } = JSON.parse(entityRelationshipText)
-                                let nodeList = {}
-                                const nodes = []
-                                const edges = []
-                                let categories = []
-                                for (let i = 0; i < entity.length; i++) {
-                                    // eslint-disable-next-line no-prototype-builtins
-                                    if (!nodeList.hasOwnProperty(entity[i].entity_name)) {
-                                        nodeList[entity[i].entity_name] = {
-                                            name: entity[i].entity_name,
-                                            category: entity[i].entity_type,
-                                            content: `- ${entity[i].entity_description}`
-                                        }
-                                    } else {
-                                        nodeList[entity[i].entity_name].content +=
-                                            `\n- ${entity[i].entity_description}`
-                                    }
-                                }
-                                for (let i = 0; i < relationship.length; i++) {
-                                    edges.push({
-                                        source: relationship[i].source_entity,
-                                        target: relationship[i].target_entity,
-                                        name: relationship[i].relationship_keywords,
-                                        content: relationship[i].relationship_description
-                                    })
-                                }
-                                entityRelationshipTemplate.push({
-                                    role: 'user',
-                                    content:
-                                        '在上次提取中缺少许多实体和对应的实体之间关系。 使用相同的格式在下面添加它们，回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。:'
-                                })
-                                const reEntityRelationshipText = await LLM.chat(
-                                    entityRelationshipTemplate
-                                )
-                                console.log(reEntityRelationshipText)
-                                const { entity: reEntity, relationship: reRelationship } =
-                                    JSON.parse(reEntityRelationshipText)
-                                for (let i = 0; i < reEntity.length; i++) {
-                                    // eslint-disable-next-line no-prototype-builtins
-                                    if (!nodeList.hasOwnProperty(reEntity[i].entity_name)) {
-                                        nodeList[reEntity[i].entity_name] = {
-                                            name: reEntity[i].entity_name,
-                                            category: reEntity[i].entity_type,
-                                            content: `- ${reEntity[i].entity_description}`
-                                        }
-                                    } else {
-                                        nodeList[reEntity[i].entity_name].content +=
-                                            `\n- ${reEntity[i].entity_description}`
-                                    }
-                                }
-                                for (let i = 0; i < reRelationship.length; i++) {
-                                    edges.push({
-                                        source: reRelationship[i].source_entity,
-                                        target: reRelationship[i].target_entity,
-                                        name: reRelationship[i].relationship_keywords,
-                                        content: reRelationship[i].relationship_description
-                                    })
-                                }
-                                for (let key in nodeList) {
-                                    nodes.push(nodeList[key])
-                                    if (categories.indexOf(nodeList[key].category) == -1) {
-                                        categories.push(nodeList[key].category)
-                                    }
-                                }
-
-                                // 分别提取
-                                // const entityTemplateText = Template.entityExtraction(text)
-                                // const entityText = await LLM.chat(entityTemplateText)
-                                // entityTemplateText.push({
-                                //     role: 'assistant',
-                                //     content: entityText
-                                // })
-                                // console.log(entityText)
-                                // let entity = JSON.parse(entityText)
-                                // let nodeList = {}
-                                // const nodes = []
-                                // const edges = []
-                                // let categories = []
-                                // for (let i = 0; i < entity.length; i++) {
-                                //     // eslint-disable-next-line no-prototype-builtins
-                                //     if (!nodeList.hasOwnProperty(entity[i].entity_name)) {
-                                //         nodeList[entity[i].entity_name] = {
-                                //             name: entity[i].entity_name,
-                                //             category: entity[i].entity_type,
-                                //             content: `- ${entity[i].entity_description}`
-                                //         }
-                                //     } else {
-                                //         nodeList[entity[i].entity_name].content +=
-                                //             `\n- ${entity[i].entity_description}`
-                                //     }
-                                // }
-                                // entityTemplateText.push({
-                                //     role: 'user',
-                                //     content:
-                                //         '在上次提取中缺少许多实体。 使用相同的格式在下面添加它们:'
-                                // })
-                                // const autoEntityText = await LLM.chat(entityTemplateText)
-                                // console.log(autoEntityText)
-                                // let autoEntity = JSON.parse(autoEntityText)
-                                // for (let i = 0; i < autoEntity.length; i++) {
-                                //     // eslint-disable-next-line no-prototype-builtins
-                                //     if (!nodeList.hasOwnProperty(autoEntity[i].entity_name)) {
-                                //         nodeList[autoEntity[i].entity_name] = {
-                                //             name: autoEntity[i].entity_name,
-                                //             category: autoEntity[i].entity_type,
-                                //             content: `- ${autoEntity[i].entity_description}`
-                                //         }
-                                //     } else {
-                                //         nodeList[autoEntity[i].entity_name].content +=
-                                //             `\n- ${autoEntity[i].entity_description}`
-                                //     }
-                                // }
-                                // for (let key in nodeList) {
-                                //     nodes.push(nodeList[key])
-                                //     if (categories.indexOf(nodeList[key].category) == -1) {
-                                //         categories.push(nodeList[key].category)
-                                //     }
-                                // }
-                                // const relationshipTemplateText = Template.relationshipExtraction(
-                                //     text,
-                                //     nodes.map((item) => item.name)
-                                // )
-                                // const relationshipText = await LLM.chat(relationshipTemplateText)
-                                // relationshipTemplateText.push({
-                                //     role: 'assistant',
-                                //     content: relationshipText
-                                // })
-                                // console.log(relationshipText)
-                                // let relationship = JSON.parse(relationshipText)
-                                // for (let i = 0; i < relationship.length; i++) {
-                                //     edges.push({
-                                //         source: relationship[i].source_entity,
-                                //         target: relationship[i].target_entity,
-                                //         name: relationship[i].relationship_keywords,
-                                //         content: relationship[i].relationship_description,
-                                //         lineStyle: {
-                                //             color: '#000',
-                                //             type: 'solid',
-                                //             width: 1,
-                                //             curveness: 0.1
-                                //         }
-                                //     })
-                                // }
-                                // relationshipTemplateText.push({
-                                //     role: 'user',
-                                //     content:
-                                //         '在上次提取中缺少许多关系。 使用相同的格式在下面添加它们:'
-                                // })
-                                // const autoRelationshipText =
-                                //     await LLM.chat(relationshipTemplateText)
-                                // console.log(autoRelationshipText)
-                                // let autoRelationship = JSON.parse(autoRelationshipText)
-                                // for (let i = 0; i < autoRelationship.length; i++) {
-                                //     edges.push({
-                                //         source: autoRelationship[i].source_entity,
-                                //         target: autoRelationship[i].target_entity,
-                                //         name: autoRelationship[i].relationship_keywords,
-                                //         content: autoRelationship[i].relationship_description,
-                                //         lineStyle: {
-                                //             color: '#000',
-                                //             type: 'solid',
-                                //             width: 1,
-                                //             curveness: 0.1
-                                //         }
-                                //     })
-                                // }
-
-                                console.log('nodes', nodes)
-                                console.log('edges', edges)
-                                console.log('categories', categories)
-                                // 加入数据
-                                const option = this.getOption()
-                                option.series[0].data = nodes
-                                option.series[0].links = edges
-                                option.series[0].categories = categories.map((item) => {
-                                    return {
-                                        name: item,
-                                        symbolSize: 80
-                                    }
-                                })
-                                this.setOption({
-                                    ...option,
-                                    legend: [
-                                        {
-                                            data: categories
-                                        }
-                                    ]
-                                })
-                                loadMessage.close()
-                                ElMessage({
-                                    message: '生成成功',
-                                    type: 'success',
-                                    duration: 5000,
-                                    offset: 46
-                                })
-                            } catch (e) {
-                                loadMessage.close()
-                                ElMessage({
-                                    message: '生成失败',
-                                    type: 'error',
-                                    duration: 5000,
-                                    offset: 46
-                                })
-                            }
-                        }
                     }
                 }
             }
         }
-
         this.setOption(option)
     }
     /**
@@ -778,7 +547,7 @@ class Chart {
      * 导入json
      * @param {object} json json对象
      */
-    fromJson(json) {
+    fromJson(json, isSend = true) {
         try {
             const nodeArray = json.node
             const edgeArray = json.edge
@@ -788,14 +557,17 @@ class Chart {
             option.series[0].links = edgeArray
             option.series[0].categories = categoryArray
 
-            this.setOption({
-                ...option,
-                legend: [
-                    {
-                        data: categoryArray.map((x) => x.name)
-                    }
-                ]
-            })
+            this.setOption(
+                {
+                    ...option,
+                    legend: [
+                        {
+                            data: categoryArray.map((x) => x.name)
+                        }
+                    ]
+                },
+                isSend
+            )
         } catch (e) {
             alert('导入失败', e)
         }
@@ -867,21 +639,246 @@ class Chart {
         let str = ''
         str += '节点信息\n\n| 节点名称 | 节点内容 |\n'
         nodeArray.forEach((node) => {
-            str += `| ${node.name.replace('\n', '<br>')} | ${node.content.replace('\n', '<br>')} |\n`
+            str += `| ${node.name.replaceAll('\n', '<br>')} | ${node.content.replaceAll('\n', '<br>')} |\n`
         })
         str += '\n\n关系信息\n\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n'
         edgeArray.forEach((edge) => {
-            str += `| ${edge.source.replace('\n', '<br>')} | ${edge.target.replace('\n', '<br>')} | ${edge.name.replace('\n', '<br>')} | ${edge.content.replace('\n', '<br>')} |\n`
+            str += `| ${edge.source.replaceAll('\n', '<br>')} | ${edge.target.replaceAll('\n', '<br>')} | ${edge.name.replaceAll('\n', '<br>')} | ${edge.content.replaceAll('\n', '<br>')} |\n`
         })
         return str
+    }
+
+    /**
+     * 由文本导入
+     * @param {string} text 文本
+     */
+    async fromText(text) {
+        const loadMessage = ElMessage({
+            message: '正在生成中...',
+            duration: 0,
+            offset: 46
+        })
+        try {
+            // 一起生成实体与关系
+            const entityRelationshipTemplate = Template.entityRelationshipExtraction(text)
+            const entityRelationshipText = await LLM.chat(entityRelationshipTemplate)
+            console.log(entityRelationshipText)
+            entityRelationshipTemplate.push({
+                role: 'assistant',
+                content: entityRelationshipText
+            })
+            const { entity, relationship } = JSON.parse(entityRelationshipText)
+            let nodeList = {}
+            const nodes = []
+            const edges = []
+            let categories = []
+            for (let i = 0; i < entity.length; i++) {
+                // eslint-disable-next-line no-prototype-builtins
+                if (!nodeList.hasOwnProperty(entity[i].entity_name)) {
+                    nodeList[entity[i].entity_name] = {
+                        name: entity[i].entity_name,
+                        category: entity[i].entity_type,
+                        content: `- ${entity[i].entity_description}`
+                    }
+                } else {
+                    nodeList[entity[i].entity_name].content += `\n- ${entity[i].entity_description}`
+                }
+            }
+            for (let i = 0; i < relationship.length; i++) {
+                edges.push({
+                    source: relationship[i].source_entity,
+                    target: relationship[i].target_entity,
+                    name: relationship[i].relationship_keywords,
+                    content: relationship[i].relationship_description
+                })
+            }
+            entityRelationshipTemplate.push({
+                role: 'user',
+                content:
+                    '在上次提取中缺少许多实体和对应的实体之间关系。 使用相同的格式在下面添加它们，回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。:'
+            })
+            const reEntityRelationshipText = await LLM.chat(entityRelationshipTemplate)
+            console.log(reEntityRelationshipText)
+            const { entity: reEntity, relationship: reRelationship } =
+                JSON.parse(reEntityRelationshipText)
+            for (let i = 0; i < reEntity.length; i++) {
+                // eslint-disable-next-line no-prototype-builtins
+                if (!nodeList.hasOwnProperty(reEntity[i].entity_name)) {
+                    nodeList[reEntity[i].entity_name] = {
+                        name: reEntity[i].entity_name,
+                        category: reEntity[i].entity_type,
+                        content: `- ${reEntity[i].entity_description}`
+                    }
+                } else {
+                    nodeList[reEntity[i].entity_name].content +=
+                        `\n- ${reEntity[i].entity_description}`
+                }
+            }
+            for (let i = 0; i < reRelationship.length; i++) {
+                edges.push({
+                    source: reRelationship[i].source_entity,
+                    target: reRelationship[i].target_entity,
+                    name: reRelationship[i].relationship_keywords,
+                    content: reRelationship[i].relationship_description
+                })
+            }
+            for (let key in nodeList) {
+                nodes.push(nodeList[key])
+                if (categories.indexOf(nodeList[key].category) == -1) {
+                    categories.push(nodeList[key].category)
+                }
+            }
+
+            // 分别提取
+            // const entityTemplateText = Template.entityExtraction(text)
+            // const entityText = await LLM.chat(entityTemplateText)
+            // entityTemplateText.push({
+            //     role: 'assistant',
+            //     content: entityText
+            // })
+            // console.log(entityText)
+            // let entity = JSON.parse(entityText)
+            // let nodeList = {}
+            // const nodes = []
+            // const edges = []
+            // let categories = []
+            // for (let i = 0; i < entity.length; i++) {
+            //     // eslint-disable-next-line no-prototype-builtins
+            //     if (!nodeList.hasOwnProperty(entity[i].entity_name)) {
+            //         nodeList[entity[i].entity_name] = {
+            //             name: entity[i].entity_name,
+            //             category: entity[i].entity_type,
+            //             content: `- ${entity[i].entity_description}`
+            //         }
+            //     } else {
+            //         nodeList[entity[i].entity_name].content +=
+            //             `\n- ${entity[i].entity_description}`
+            //     }
+            // }
+            // entityTemplateText.push({
+            //     role: 'user',
+            //     content:
+            //         '在上次提取中缺少许多实体。 使用相同的格式在下面添加它们:'
+            // })
+            // const autoEntityText = await LLM.chat(entityTemplateText)
+            // console.log(autoEntityText)
+            // let autoEntity = JSON.parse(autoEntityText)
+            // for (let i = 0; i < autoEntity.length; i++) {
+            //     // eslint-disable-next-line no-prototype-builtins
+            //     if (!nodeList.hasOwnProperty(autoEntity[i].entity_name)) {
+            //         nodeList[autoEntity[i].entity_name] = {
+            //             name: autoEntity[i].entity_name,
+            //             category: autoEntity[i].entity_type,
+            //             content: `- ${autoEntity[i].entity_description}`
+            //         }
+            //     } else {
+            //         nodeList[autoEntity[i].entity_name].content +=
+            //             `\n- ${autoEntity[i].entity_description}`
+            //     }
+            // }
+            // for (let key in nodeList) {
+            //     nodes.push(nodeList[key])
+            //     if (categories.indexOf(nodeList[key].category) == -1) {
+            //         categories.push(nodeList[key].category)
+            //     }
+            // }
+            // const relationshipTemplateText = Template.relationshipExtraction(
+            //     text,
+            //     nodes.map((item) => item.name)
+            // )
+            // const relationshipText = await LLM.chat(relationshipTemplateText)
+            // relationshipTemplateText.push({
+            //     role: 'assistant',
+            //     content: relationshipText
+            // })
+            // console.log(relationshipText)
+            // let relationship = JSON.parse(relationshipText)
+            // for (let i = 0; i < relationship.length; i++) {
+            //     edges.push({
+            //         source: relationship[i].source_entity,
+            //         target: relationship[i].target_entity,
+            //         name: relationship[i].relationship_keywords,
+            //         content: relationship[i].relationship_description,
+            //         lineStyle: {
+            //             color: '#000',
+            //             type: 'solid',
+            //             width: 1,
+            //             curveness: 0.1
+            //         }
+            //     })
+            // }
+            // relationshipTemplateText.push({
+            //     role: 'user',
+            //     content:
+            //         '在上次提取中缺少许多关系。 使用相同的格式在下面添加它们:'
+            // })
+            // const autoRelationshipText =
+            //     await LLM.chat(relationshipTemplateText)
+            // console.log(autoRelationshipText)
+            // let autoRelationship = JSON.parse(autoRelationshipText)
+            // for (let i = 0; i < autoRelationship.length; i++) {
+            //     edges.push({
+            //         source: autoRelationship[i].source_entity,
+            //         target: autoRelationship[i].target_entity,
+            //         name: autoRelationship[i].relationship_keywords,
+            //         content: autoRelationship[i].relationship_description,
+            //         lineStyle: {
+            //             color: '#000',
+            //             type: 'solid',
+            //             width: 1,
+            //             curveness: 0.1
+            //         }
+            //     })
+            // }
+
+            console.log('nodes', nodes)
+            console.log('edges', edges)
+            console.log('categories', categories)
+            // 加入数据
+            const option = this.getOption()
+            option.series[0].data = nodes
+            option.series[0].links = edges
+            option.series[0].categories = categories.map((item) => {
+                return {
+                    name: item,
+                    symbolSize: 80
+                }
+            })
+            this.setOption({
+                ...option,
+                legend: [
+                    {
+                        data: categories
+                    }
+                ]
+            })
+            loadMessage.close()
+            ElMessage({
+                message: '生成成功',
+                type: 'success',
+                duration: 5000,
+                offset: 46
+            })
+        } catch (e) {
+            loadMessage.close()
+            ElMessage({
+                message: '生成失败',
+                type: 'error',
+                duration: 5000,
+                offset: 46
+            })
+        }
     }
 
     /**
      * 设置option
      * @param {*} option
      */
-    setOption(option) {
+    setOption(option, isSend = true) {
         this.chart.setOption(option)
+        if (Chart.collaborationRoomKey !== '' && isSend) {
+            SSESend(Chart.collaborationRoomKey, JSON.stringify(this.toJson()), 'chartRoom')
+        }
     }
     /**
      * 获取option
@@ -953,6 +950,11 @@ class Chart {
             x: porin[0],
             y: porin[1]
         }
+    }
+
+    static collaborationRoomListener({ content }) {
+        const chart = new Chart()
+        chart.fromJson(JSON.parse(content), false)
     }
 }
 

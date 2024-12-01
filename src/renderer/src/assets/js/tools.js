@@ -72,6 +72,14 @@ class Tools {
         }
         return new Blob([ab], { type: mimeString })
     }
+
+    /**
+     * 复制到剪切板
+     * @param {string} text 文本
+     */
+    static async copyToClipboard(text) {
+        await navigator.clipboard.writeText(text)
+    }
 }
 
 export default Tools

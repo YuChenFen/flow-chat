@@ -6,6 +6,13 @@ try {
         chart: {
             title: '编辑器',
             layout: 'force',
+            legend: {
+                orient: 'vertical',
+                top: '',
+                left: '10',
+                bottom: '10',
+                right: ''
+            },
             force: {
                 gravity: 0.1,
                 repulsion: 2000,

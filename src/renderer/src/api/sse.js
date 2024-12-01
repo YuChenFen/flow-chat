@@ -1,10 +1,11 @@
 import { $post } from './index'
 
-const eventNames = ['SSE: message']
+const eventNames = ['SSE: message-text', 'SSE: message-chartRoom']
 
 class SSEEvents {
     static _listeners = {
-        'SSE: message': new Set()
+        'SSE: message-text': new Set(),
+        'SSE: message-chartRoom': new Set()
     }
     static init() {
         const token = sessionStorage.getItem('token')
@@ -19,10 +20,18 @@ class SSEEvents {
             try {
                 // eslint-disable-next-line no-constant-condition
                 while (true) {
-                    const { done, value } = await reader.read()
-                    if (done) return
-                    const data = new TextDecoder().decode(value)
-                    SSEEvents.dispatchEvent('SSE: message', JSON.parse(data))
+                    let text = ''
+                    while (text.indexOf('[END_FLAG]') === -1) {
+                        const { done, value } = await reader.read()
+                        if (done) return
+                        text += new TextDecoder().decode(value)
+                    }
+                    const block = text.split('[END_FLAG]')
+                    // block[0] = block[0].replace(/\\\[END_FLAG\\\]/g, '[END_FLAG]')
+                    const data = JSON.parse(block[0])
+                    data.content = decodeURIComponent(data.content)
+                    text = block[1]
+                    SSEEvents.dispatchEvent(`SSE: message-${data.type}`, data)
                 }
             } catch (e) {
                 console.log('sse:', e)
@@ -46,11 +55,12 @@ class SSEEvents {
     }
 }
 
-export function send(toUserId, content) {
+export function send(to, content, type) {
     const data = {
-        toUserId,
-        content,
-        type: 'text'
+        to: String(to),
+        // content: content.replace(/\[END_FLAG\]/g, '\\[END_FLAG\\]'),
+        content: encodeURIComponent(content),
+        type: type
     }
     return $post('/db/message/send', JSON.stringify(data), {
         'Content-Type': 'application/json'

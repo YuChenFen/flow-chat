@@ -100,7 +100,7 @@ async function send() {
             role: 'user',
             content: inputValue.value
         })
-        sendUser(currentChat.value.id, inputValue.value)
+        sendUser(currentChat.value.id, inputValue.value, 'text')
         inputValue.value = ''
     } else {
         await sendAI()

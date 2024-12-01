@@ -13,10 +13,13 @@
     </div>
 </template>
 <script setup>
+import { ElMessageBox } from 'element-plus'
 import Tools from '../../assets/js/tools'
 import Chart from '../Flow/chart'
 import TitlebarMenu from './TitlebarMenu.vue'
 import { useRouter } from 'vue-router'
+import { h } from 'vue'
+import CollaborationBox from './box/CollaborationBox.vue'
 
 const router = useRouter()
 
@@ -217,6 +220,23 @@ const menuData = {
                             console.log(e)
                         }
                     }
+                },
+                {
+                    type: 'item',
+                    text: 'AI解析文本',
+                    callback: async () => {
+                        // 打开文件对话框
+                        const text = await Tools.openTextFile([
+                            {
+                                description: '文本',
+                                accept: {
+                                    'text/plain': ['.txt']
+                                }
+                            }
+                        ])
+                        const chart = new Chart()
+                        chart.fromText(text)
+                    }
                 }
             ]
         },
@@ -299,18 +319,19 @@ const menuData = {
                     }
                 }
             ]
-        }
-    ],
-    编辑: [
+        },
         {
-            type: 'item',
-            text: '复制',
-            key: 'ctrl + c'
+            type: 'line'
         },
         {
             type: 'item',
-            text: '粘贴',
-            key: 'ctrl + v'
+            text: '实时操作',
+            callback: async () => {
+                ElMessageBox({
+                    showConfirmButton: false,
+                    message: h(CollaborationBox)
+                })
+            }
         }
     ],
     查看: [
