@@ -7,13 +7,17 @@
             <el-avatar v-else class="head-portrait" :src="currentChat.avatar">
                 <img src="/src/assets/image/AI.png" />
             </el-avatar>
-            <span class="content markdown-body" v-html="marked.parse(message.content)"></span>
+            <span class="content">
+                <MdPreview :text="message.content"></MdPreview>
+            </span>
         </div>
         <div v-if="chatMassage" class="assistant">
             <el-avatar class="head-portrait" :src="currentChat.avatar">
                 <img src="/src/assets/image/AI.png" />
             </el-avatar>
-            <span class="content markdown-body" v-html="marked.parse(chatMassage)"></span>
+            <span class="content">
+                <MdPreview :text="chatMassage"></MdPreview>
+            </span>
         </div>
         <div v-if="isLoading && chatMassage === ''" class="assistant">
             <el-avatar class="head-portrait" :src="currentChat.avatar">
@@ -28,9 +32,9 @@
 </template>
 
 <script setup>
-import { marked } from 'marked'
 import { nextTick, onMounted, onUpdated, ref } from 'vue'
 import { getUserInfo } from '../../api/user'
+import MdPreview from '@renderer/components/MdPreview.vue'
 
 const currentChat = defineModel('currentChat')
 defineProps({
@@ -77,7 +81,7 @@ getUserInfo().then((res) => {
 .messages {
     flex: 1;
     overflow-y: auto;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -97,6 +101,9 @@ getUserInfo().then((res) => {
         .content {
             background-color: #0099ff;
             color: #fff;
+        }
+        .content * {
+            color: inherit;
         }
     }
 
@@ -129,7 +136,7 @@ getUserInfo().then((res) => {
     .content {
         grid-column: 2;
         grid-row: 1;
-        padding: 0.55rem 1rem;
+        padding: 0.1rem 1rem;
         border-radius: 10px;
         line-height: 1.5rem;
         max-width: 100%;

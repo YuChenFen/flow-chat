@@ -27,9 +27,9 @@ class SSEEvents {
                         text += new TextDecoder().decode(value)
                     }
                     const block = text.split('[END_FLAG]')
+                    block[0] = decodeURIComponent(block[0])
                     // block[0] = block[0].replace(/\\\[END_FLAG\\\]/g, '[END_FLAG]')
                     const data = JSON.parse(block[0])
-                    data.content = decodeURIComponent(data.content)
                     text = block[1]
                     SSEEvents.dispatchEvent(`SSE: message-${data.type}`, data)
                 }
@@ -59,7 +59,7 @@ export function send(to, content, type) {
     const data = {
         to: String(to),
         // content: content.replace(/\[END_FLAG\]/g, '\\[END_FLAG\\]'),
-        content: encodeURIComponent(content),
+        content: content,
         type: type
     }
     return $post('/db/message/send', JSON.stringify(data), {

@@ -3,9 +3,10 @@ import LLM from '../../assets/js/llm'
 import { ElMessage } from 'element-plus'
 import Tools from '../../assets/js/tools'
 import Template from './template'
-import { marked } from 'marked'
 import config from '@renderer/assets/js/config'
 import { send as SSESend } from '../../api/sse'
+import MdPreview from '@renderer/components/MdPreview.vue'
+import { render, h } from 'vue'
 
 class Chart {
     static instance
@@ -72,15 +73,17 @@ class Chart {
                 show: true,
                 confine: true,
                 // alwaysShowContent: true,
-                formatter: function (x) {
-                    const div = document.createElement('div')
-                    div.style.maxWidth = '300px'
-                    div.style.maxHeight = '500px'
-                    div.style.whiteSpace = 'pre-wrap'
-                    div.style.overflowY = 'scroll'
-                    div.classList.add('markdown-body')
-                    div.innerHTML = marked.parse(x.data.content ? x.data.content : '无内容')
-                    return div
+                formatter: function (params) {
+                    const vnode = h(MdPreview, {
+                        text: params.data.content ? params.data.content : '无内容'
+                    })
+                    const container = document.createElement('div')
+                    container.style.maxWidth = '300px'
+                    container.style.maxHeight = '500px'
+                    container.style.whiteSpace = 'pre-wrap'
+                    container.style.overflowY = 'scroll'
+                    render(vnode, container)
+                    return container
                 }
             },
             series: [

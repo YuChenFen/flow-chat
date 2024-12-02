@@ -6,7 +6,7 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="connect-src *; default-src 'self' http://localhost:11434 http://127.0.0.1:8008 https://api.siliconflow.cn https://open.bigmodel.cn; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: 'self'  data: http://127.0.0.1:8008"
+      content="connect-src *; default-src 'self' http://localhost:11434 http://127.0.0.1:8008 https://api.siliconflow.cn https://open.bigmodel.cn https://unpkg.com; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src * blob: 'self'  data: http://127.0.0.1:8008"
     />
   </head>
 

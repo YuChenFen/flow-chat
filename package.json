@@ -44,7 +44,7 @@
     "electron-updater": "^6.1.7",
     "element-plus": "^2.8.7",
     "event-source-polyfill": "^1.0.31",
-    "marked": "^15.0.0",
+    "md-editor-v3": "^5.0.2",
     "pinia": "^2.2.6",
     "vue-router": "^4.4.5"
   },

@@ -24,7 +24,15 @@
             </div>
             <div class="item">
                 <el-text class="mx-1 lable-top" line-clamp="1">节点内容</el-text>
-                <el-input v-model="nodeFrom.content" type="textarea" />
+                <!-- <el-input v-model="nodeFrom.content" type="textarea" /> -->
+            </div>
+            <div class="item">
+                <MdEditor
+                    v-model:text="nodeFrom.content"
+                    :preview="false"
+                    :toolbars="[]"
+                    style="height: 300px"
+                ></MdEditor>
             </div>
         </div>
     </el-drawer>
@@ -33,6 +41,7 @@
 <script setup>
 import { ref } from 'vue'
 import Chart from '../chart.js'
+import MdEditor from '@renderer/components/MdEditor.vue'
 
 const nodeDrawer = defineModel('nodeDrawer')
 defineProps({
