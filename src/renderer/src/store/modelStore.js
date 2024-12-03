@@ -16,6 +16,12 @@ export const useModelStore = defineStore('model', () => {
         },
         getVendorNameList() {
             return Object.keys(LLM.vendorName)
+        },
+        getVectorDbEnable() {
+            return config.llm.vectorDbEnable
+        },
+        setVectorDbEnable(enable) {
+            config.llm.vectorDbEnable = enable
         }
     }
 

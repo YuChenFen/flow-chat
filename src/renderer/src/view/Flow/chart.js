@@ -640,13 +640,13 @@ class Chart {
         const edgeArray = option.series[0].links
 
         let str = ''
-        str += '节点信息\n\n| 节点名称 | 节点内容 |\n'
+        str += '| 节点名称 | 节点内容 |\n'
         nodeArray.forEach((node) => {
-            str += `| ${node.name.replaceAll('\n', '<br>')} | ${node.content.replaceAll('\n', '<br>')} |\n`
+            str += `| ${node.name?.replaceAll('\n', '<br>')} | ${node.content?.replaceAll('\n', '<br>')} |\n`
         })
-        str += '\n\n关系信息\n\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n'
+        str += '\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n'
         edgeArray.forEach((edge) => {
-            str += `| ${edge.source.replaceAll('\n', '<br>')} | ${edge.target.replaceAll('\n', '<br>')} | ${edge.name.replaceAll('\n', '<br>')} | ${edge.content.replaceAll('\n', '<br>')} |\n`
+            str += `| ${edge.source?.replaceAll('\n', '<br>')} | ${edge.target?.replaceAll('\n', '<br>')} | ${edge.name?.replaceAll('\n', '<br>')} | ${edge.content?.replaceAll('\n', '<br>')} |\n`
         })
         return str
     }

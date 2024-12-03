@@ -8,6 +8,7 @@
                 @click="handleClick"
             >
                 <el-anchor-link href="#基本设置-model" title="基本设置" />
+                <el-anchor-link href="#聊天设置" title="聊天设置" />
                 <el-anchor-link href="#ollama" title="ollama" />
                 <el-anchor-link href="#siliconflow" title="siliconflow" />
                 <el-anchor-link href="#智谱AI" title="智谱AI" />
@@ -34,6 +35,12 @@
                         <el-text type="danger">暂无模型</el-text>
                     </template>
                 </el-select>
+            </div>
+            <h3 id="聊天设置">聊天设置</h3>
+            <div class="card">
+                <el-text size="large" class="title">向量数据库</el-text>
+                <el-text class="description">在知识图谱问答时启用向量数据库过滤</el-text>
+                <el-switch v-model="vectorDbEnable" @change="modelStore.llm.setVectorDbEnable" />
             </div>
             <h3 id="ollama">ollama</h3>
             <div class="card">
@@ -137,6 +144,7 @@ import { useModelStore } from '@renderer/store/modelStore'
 const modelStore = useModelStore()
 const itemContainerRef = ref()
 const vendorName = ref(modelStore.llm.getVendorName())
+const vectorDbEnable = ref(modelStore.llm.getVectorDbEnable())
 const ollamaApiUrl = ref(modelStore.ollama.getUrl())
 const ollamaLlmModel = ref(modelStore.ollama.getModel())
 const ollamaLlmModelList = ref([])

@@ -23,7 +23,10 @@
             <el-avatar class="head-portrait" :src="currentChat.avatar">
                 <img src="/src/assets/image/AI.png" />
             </el-avatar>
-            <div class="content" style="display: flex; align-items: center; gap: 10px">
+            <div
+                class="content"
+                style="display: flex; align-items: center; gap: 10px; padding: 0.55rem 1rem"
+            >
                 <span class="loader"></span>
                 <span>加载中...</span>
             </div>
@@ -136,7 +139,7 @@ getUserInfo().then((res) => {
     .content {
         grid-column: 2;
         grid-row: 1;
-        padding: 0.1rem 1rem;
+        padding: 0rem 1rem;
         border-radius: 10px;
         line-height: 1.5rem;
         max-width: 100%;

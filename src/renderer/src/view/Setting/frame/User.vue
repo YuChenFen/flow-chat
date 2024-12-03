@@ -8,6 +8,7 @@
                 @click="handleClick"
             >
                 <el-anchor-link href="#用户信息" title="用户信息" />
+                <el-anchor-link href="#账户密码" title="账户密码" />
             </el-anchor>
         </div>
         <div ref="itemContainerRef" class="item-container">
@@ -122,13 +123,39 @@
                 <el-button type="primary" @click="changeUserInfo">确定</el-button>
                 <el-button type="danger" @click="isChange = false">取消</el-button>
             </div>
+            <h3 id="账户密码">账户密码</h3>
+            <div
+                v-if="isChangePassword"
+                style="display: flex; align-items: flex-end; gap: 10px; flex-direction: column"
+            >
+                <el-input
+                    v-model="password.oldPassword"
+                    type="password"
+                    placeholder="请输入旧密码"
+                />
+                <el-input
+                    v-model="password.newPassword"
+                    type="password"
+                    placeholder="请输入新密码"
+                />
+                <el-input
+                    v-model="password.confirmPassword"
+                    type="password"
+                    placeholder="请再次输入新密码"
+                />
+                <div>
+                    <el-button type="primary" @click="changePassword">确定</el-button>
+                    <el-button type="danger" @click="isChangePassword = false">取消</el-button>
+                </div>
+            </div>
+            <el-button v-else @click="isChangePassword = true">修改密码</el-button>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref, reactive, watch } from 'vue'
-import { getUserInfo, updateUserInfo } from '../../../api/user'
+import { getUserInfo, updateUserInfo, updateUserPassword } from '../../../api/user'
 import { ElMessage } from 'element-plus'
 const itemContainerRef = ref(null)
 const isChange = ref(false)
@@ -139,6 +166,12 @@ const userInfo = reactive({
     phone: '',
     email: '',
     userRole: ''
+})
+const isChangePassword = ref(false)
+const password = reactive({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
 })
 
 function init() {
@@ -200,6 +233,53 @@ async function changeUserInfo() {
     } else {
         ElMessage({
             message: '修改失败',
+            type: 'error',
+            duration: 2000,
+            offset: 46
+        })
+    }
+}
+
+async function changePassword() {
+    if (password.newPassword !== password.confirmPassword) {
+        ElMessage({
+            message: '两次输入的密码不一致',
+            type: 'error',
+            duration: 2000,
+            offset: 46
+        })
+        return
+    }
+    if (password.oldPassword === '' || password.newPassword === '') {
+        ElMessage({
+            message: '密码不能为空',
+            type: 'error',
+            duration: 2000,
+            offset: 46
+        })
+        return
+    }
+    if (password.oldPassword === password.newPassword) {
+        ElMessage({
+            message: '新密码不能与旧密码相同',
+            type: 'error',
+            duration: 2000,
+            offset: 46
+        })
+        return
+    }
+    const { code, message } = await updateUserPassword(password.oldPassword, password.newPassword)
+    if (code === 200) {
+        ElMessage({
+            message: '修改成功',
+            type: 'success',
+            duration: 2000,
+            offset: 46
+        })
+        isChangePassword.value = false
+    } else {
+        ElMessage({
+            message: '修改失败:' + message,
             type: 'error',
             duration: 2000,
             offset: 46

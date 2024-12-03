@@ -46,6 +46,7 @@ body{
     position: relative;
     border-radius: 5px;
     user-select: none;
+    box-shadow: #3a3a3a 0px 2px 8px 0px;
 
     &::before{
         position: absolute;

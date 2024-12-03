@@ -68,6 +68,8 @@ import ChatItemContextMenu from './contextMenu/ChatItemContextMenu.vue'
 import { storeToRefs } from 'pinia'
 import { queryUser } from '../../api/user'
 import { send as sendUser } from '../../api/sse'
+import { vdQuery } from '../../api/message'
+import config from '../../assets/js/config'
 
 const chatItemContextMenuX = ref(-1)
 const chatItemContextMenuY = ref(-1)
@@ -184,11 +186,16 @@ function showChatItemContextMenu(chat, event) {
     chatItemContextMenuY.value = event.clientY
 }
 
-function getTemplate(type, messages, template) {
+async function getTemplate(type, messages, template) {
     if (type === '普通对话') {
         return messages
     } else if (type === '结合当前知识图谱') {
-        return Template.chatTemplate(template, messages[messages.length - 1].content)
+        const query = messages[messages.length - 1].content
+        let newTemplate = template
+        if (config.llm.vectorDbEnable) {
+            newTemplate = await vdQuery(template, query)
+        }
+        return Template.chatTemplate(newTemplate, query)
     } else {
         return messages
     }
@@ -211,7 +218,7 @@ async function sendAI() {
         //     messages.value[messages.value.length - 1].content
         // )
         // let chatTemplate = messages.value
-        let chatTemplate = getTemplate(
+        let chatTemplate = await getTemplate(
             currentChat.value.type,
             currentChat.value.messages,
             currentChat.value.template

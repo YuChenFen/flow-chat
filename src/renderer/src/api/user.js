@@ -72,3 +72,14 @@ export const changeUserInfo = async (userAccount, userRole, isDelete) => {
     )
     return { code, message }
 }
+
+export const updateUserPassword = async (oldPassword, newPassword) => {
+    const { code, message } = await $post(
+        '/db/user/updatePassword',
+        JSON.stringify({ oldPassword, newPassword }),
+        {
+            'Content-Type': 'application/json'
+        }
+    )
+    return { code, message }
+}

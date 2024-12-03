@@ -24,6 +24,7 @@ try {
         },
         llm: {
             vendor: 'ollama',
+            VectorDbEnable: true,
             ollama: {
                 url: 'http://localhost:11434',
                 model: ''
