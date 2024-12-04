@@ -42,3 +42,19 @@ export const publishCommunity = async (params) => {
     const { code } = await $post('/db/community/data', params)
     return code
 }
+
+export async function addComment(communityId, content) {
+    const { code } = await $post(
+        '/db/community/comment',
+        JSON.stringify({ communityId, content }),
+        {
+            'Content-Type': 'application/json'
+        }
+    )
+    return code
+}
+
+export async function getCommentList(communityId, page = 1, size = 10) {
+    const { data } = await $get('/db/community/comment/list', { communityId, page, size })
+    return data
+}
