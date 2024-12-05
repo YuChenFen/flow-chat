@@ -133,6 +133,14 @@ class ChartTemplate {
     setOption(option) {
         this.chart.setOption(option)
     }
+
+    /**
+     * 消除实例
+     */
+    destroy() {
+        this.chart.dispose()
+        ChartTemplate.instance = null
+    }
 }
 
 export default ChartTemplate

@@ -92,6 +92,14 @@
                     <el-option label="垂直" value="vertical" />
                 </el-select>
             </div>
+            <div class="card">
+                <el-text size="large" class="title">提示框</el-text>
+                <el-text class="description">是否显示提示框（数据量较大时建议关闭）</el-text>
+                <el-switch
+                    v-model="tooltipShow"
+                    @change="(val) => (config.chart.tooltip.show = val)"
+                />
+            </div>
             <h3 id="力引导布局">力引导布局</h3>
             <div class="card">
                 <el-text size="large" class="title">引力因子</el-text>
@@ -163,6 +171,7 @@ const legendLeft = ref(config.chart.legend.left)
 const legendRight = ref(config.chart.legend.right)
 const legendBottom = ref(config.chart.legend.bottom)
 const legendOrient = ref(config.chart.legend.orient)
+const tooltipShow = ref(config.chart.tooltip.show)
 
 const handleClick = (e) => {
     e.preventDefault()

@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ChartTemplate from './chart'
 import { addComment, getCommentList, getCommunityDetail } from '../../api/community'
@@ -68,15 +68,15 @@ const { setOption } = useFlowStore()
 const commentText = ref('')
 const data = ref({})
 const commentList = ref([])
+let chartTemplate
 
 onMounted(async () => {
-    const chartTemplate = new ChartTemplate('detail-chart', true)
+    chartTemplate = new ChartTemplate('detail-chart', true)
 
     data.value = await getCommunityDetail(route.params.id)
     chartTemplate.fromJson(data.value.option)
 
     commentList.value = await getCommentList(route.params.id)
-    console.log(commentList.value)
 })
 
 function back() {
@@ -105,6 +105,10 @@ async function sendComment() {
         })
     }
 }
+
+onBeforeUnmount(() => {
+    chartTemplate.destroy()
+})
 </script>
 
 <style scoped>

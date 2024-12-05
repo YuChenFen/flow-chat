@@ -108,9 +108,11 @@ function onClick(item) {
 
 function addNode() {
     // echarts 调用后关系线位置错误
-    // const { x, y } = chartInstance.convertFromPixel(props.tx, props.ty)
-    // nodeFrom.x = props.tx
-    // nodeFrom.y = props.ty
+    // if (config.chart.layout === 'none') {
+    //     const { x, y } = chartInstance.convertFromPixel(props.tx, props.ty)
+    //     nodeFrom.x = x
+    //     nodeFrom.y = y
+    // }
     chartInstance.addNode({ ...nodeFrom })
 }
 function addEdge() {

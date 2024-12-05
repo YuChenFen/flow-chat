@@ -162,6 +162,7 @@ onBeforeUnmount(() => {
     chartInstance.chart.off('dblclick')
     chartInstance.chart.off('contextmenu')
     chartInstance.chart.getZr().off('contextmenu')
+    chartInstance.destroy()
 })
 </script>
 

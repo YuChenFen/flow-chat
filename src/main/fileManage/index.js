@@ -34,6 +34,9 @@ function loadConfig() {
                 bottom: '10',
                 right: ''
             },
+            tooltip: {
+                show: false
+            },
             force: {
                 gravity: 0.1,
                 repulsion: 2000,

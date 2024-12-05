@@ -70,7 +70,7 @@ class Chart {
                 }
             ],
             tooltip: {
-                show: true,
+                show: config.chart.tooltip.show,
                 confine: true,
                 // alwaysShowContent: true,
                 formatter: function (params) {
@@ -712,7 +712,11 @@ class Chart {
                         category: reEntity[i].entity_type,
                         content: `- ${reEntity[i].entity_description}`
                     }
-                } else {
+                } else if (
+                    nodeList[reEntity[i].entity_name].content.indexOf(
+                        reEntity[i].entity_description
+                    ) === -1
+                ) {
                     nodeList[reEntity[i].entity_name].content +=
                         `\n- ${reEntity[i].entity_description}`
                 }
@@ -953,6 +957,27 @@ class Chart {
             x: porin[0],
             y: porin[1]
         }
+    }
+    /**
+     * 数据坐标转像素坐标
+     * @param {number} x 数据坐标x
+     * @param {number} y 数据坐标y
+     * @return {array} 像素坐标
+     */
+    convertToPixel(x, y) {
+        const porin = this.chart.convertToPixel({ seriesIndex: 0 }, [x, y])
+        return {
+            x: porin[0],
+            y: porin[1]
+        }
+    }
+
+    /**
+     * 消除实例
+     */
+    destroy() {
+        this.chart.dispose()
+        Chart.instance = null
     }
 
     static collaborationRoomListener({ content }) {
