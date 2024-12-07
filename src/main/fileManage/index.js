@@ -48,7 +48,7 @@ function loadConfig() {
         },
         llm: {
             vendor: '',
-            vectorDbEnable: true,
+            retrieverEnable: true,
             ollama: {
                 url: 'http://localhost:11434',
                 model: ''

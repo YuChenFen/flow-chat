@@ -126,7 +126,7 @@ import chatTextarea from '../../components/chatTextarea.vue'
 import { storeToRefs } from 'pinia'
 import { queryUser } from '../../api/user'
 import { send as sendUser } from '../../api/sse'
-import { vdQuery } from '../../api/message'
+import { retrieverQuery } from '../../api/message'
 import config from '../../assets/js/config'
 
 const chatItemContextMenuX = ref(-1)
@@ -247,6 +247,18 @@ function openAddChat() {
 function chartToMarkdownTable(nodeArray, edgeArray) {
     let str = ''
     str += '| 节点名称 | 节点内容 |\n'
+    nodeArray = nodeArray.map((node) => {
+        node.name = node.name === '' ? '空' : node.name
+        node.content = node.content === '' ? '空' : node.content
+        return node
+    })
+    edgeArray = edgeArray.map((edge) => {
+        edge.source = edge.source === '' ? '空' : edge.source
+        edge.target = edge.target === '' ? '空' : edge.target
+        edge.name = edge.name === '' ? '空' : edge.name
+        edge.content = edge.content === '' ? '空' : edge.content
+        return edge
+    })
     nodeArray.forEach((node) => {
         str += `| ${node.name?.replaceAll('\n', '<br>')} | ${node.content?.replaceAll('\n', '<br>')} |\n`
     })
@@ -270,8 +282,8 @@ async function getTemplate(type, messages, template) {
     } else if (type === '知识图谱') {
         const query = messages[messages.length - 1].content
         let newTemplate = template
-        if (config.llm.vectorDbEnable) {
-            newTemplate = await vdQuery(template, query)
+        if (config.llm.retrieverEnable) {
+            newTemplate = await retrieverQuery(template, query)
         }
         return Template.chatTemplate(newTemplate, query)
     } else {

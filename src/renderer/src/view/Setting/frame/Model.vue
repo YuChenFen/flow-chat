@@ -38,9 +38,9 @@
             </div>
             <h3 id="聊天设置">聊天设置</h3>
             <div class="card">
-                <el-text size="large" class="title">向量数据库</el-text>
-                <el-text class="description">在知识图谱问答时启用向量数据库过滤</el-text>
-                <el-switch v-model="vectorDbEnable" @change="modelStore.llm.setVectorDbEnable" />
+                <el-text size="large" class="title">数据检索</el-text>
+                <el-text class="description">在知识图谱问答时启用数据检索进行过滤</el-text>
+                <el-switch v-model="retrieverEnable" @change="modelStore.llm.setRetrieverEnable" />
             </div>
             <h3 id="ollama">ollama</h3>
             <div class="card">
@@ -144,7 +144,7 @@ import { useModelStore } from '@renderer/store/modelStore'
 const modelStore = useModelStore()
 const itemContainerRef = ref()
 const vendorName = ref(modelStore.llm.getVendorName())
-const vectorDbEnable = ref(modelStore.llm.getVectorDbEnable())
+const retrieverEnable = ref(modelStore.llm.getRetrieverEnable())
 const ollamaApiUrl = ref(modelStore.ollama.getUrl())
 const ollamaLlmModel = ref(modelStore.ollama.getModel())
 const ollamaLlmModelList = ref([])

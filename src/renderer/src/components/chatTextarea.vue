@@ -63,8 +63,7 @@ const send = () => {
     height: 2rem;
     background-color: #ffffff;
     color: #626262;
-    border: 1px solid #bbbbbb;
-    box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+    border: 1px solid #efefef;
     border-radius: 5px;
     cursor: pointer;
     right: 10px;
