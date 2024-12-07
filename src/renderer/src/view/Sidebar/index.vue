@@ -45,6 +45,12 @@
                     <span>用户管理</span>
                 </template>
             </el-menu-item>
+            <el-menu-item v-if="role === 'admin' || role === 'superAdmin'" index="社区管理">
+                <el-icon><TakeawayBox /></el-icon>
+                <template #title>
+                    <span>社区管理</span>
+                </template>
+            </el-menu-item>
         </div>
         <div>
             <el-menu-item index="设置">

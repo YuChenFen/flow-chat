@@ -1,9 +1,9 @@
-import { $get, $post } from '.'
+import { $get, $post, $delete } from '.'
 
-export const getCommunityList = async (userName, description) => {
+export const getCommunityList = async (userName, description, page = 1, size = 100) => {
     const params = {
-        page: 1,
-        size: 100
+        page: page,
+        size: size
     }
     if (userName) {
         params.userName = userName
@@ -12,18 +12,7 @@ export const getCommunityList = async (userName, description) => {
         params.description = description
     }
     const { data } = await $get('/db/community/list', params)
-    let list = []
-    for (let i = 0; i < data.length; i++) {
-        list.push({
-            id: data[i][0],
-            name: data[i][1],
-            description: data[i][2],
-            image: data[i][3],
-            updateTime: data[i][4],
-            userAvatar: data[i][5]
-        })
-    }
-    return list
+    return data
 }
 
 export const getCommunityDetail = async (id) => {
@@ -36,6 +25,11 @@ export const getCommunityDetail = async (id) => {
         option: JSON.parse(data[0][0]),
         description: data[0][1]
     }
+}
+
+export const deleteCommunity = async (id) => {
+    const { code } = await $delete('/db/community/data', { id })
+    return code
 }
 
 export const publishCommunity = async (params) => {

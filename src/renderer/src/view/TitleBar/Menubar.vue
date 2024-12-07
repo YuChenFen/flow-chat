@@ -353,7 +353,10 @@ const menuData = {
     帮助: [
         {
             type: 'item',
-            text: '欢迎'
+            text: '欢迎',
+            callback: () => {
+                router.push({ name: '首页' })
+            }
         },
         {
             type: 'item',

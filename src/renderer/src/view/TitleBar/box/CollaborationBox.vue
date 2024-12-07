@@ -32,7 +32,7 @@
                 "
             >
                 <p style="font-size: 1rem; width: 100%; display: flex; align-items: center">
-                    <span>房间号：</span>
+                    <span style="width: 4rem">房间号：</span>
                     <span
                         style="
                             border-radius: 5px;

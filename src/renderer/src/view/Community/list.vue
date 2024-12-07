@@ -46,7 +46,7 @@
                             <img src="/src/assets/image/empty-user.png" />
                         </el-avatar>
                         <div>
-                            <div class="user-name">{{ item.name }}</div>
+                            <div class="user-name">{{ item.userName }}</div>
                             <div class="one-line">
                                 {{ item.description }}
                             </div>
@@ -87,8 +87,8 @@ import { publishCommunity } from '../../api/community'
 const router = useRouter()
 const communityList = ref([])
 const filterText = ref('')
-getCommunityList().then((res) => {
-    communityList.value = res
+getCommunityList().then(({ data }) => {
+    communityList.value = data
 })
 function toDetail(item) {
     router.push({ name: '社区详情', params: { id: item.id } })
@@ -98,8 +98,8 @@ let filterListTimeout = null
 function filterData() {
     clearTimeout(filterListTimeout)
     filterListTimeout = setTimeout(() => {
-        getCommunityList(filterText.value, filterText.value).then((res) => {
-            communityList.value = res
+        getCommunityList(filterText.value, filterText.value).then(({ data }) => {
+            communityList.value = data
         })
     }, 500)
 }
@@ -137,8 +137,8 @@ function openPublish() {
                     message: '发布成功',
                     offset: 46
                 })
-                getCommunityList().then((res) => {
-                    communityList.value = res
+                getCommunityList().then(({ data }) => {
+                    communityList.value = data
                 })
             } else {
                 ElMessage.error({

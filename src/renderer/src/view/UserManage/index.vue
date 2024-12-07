@@ -238,7 +238,19 @@ const columns = [
         dataKey: 'email',
         width: 150,
         align: 'center',
-        cellRenderer: ({ cellData }) => <div>{cellData}</div>
+        cellRenderer: ({ cellData }) => {
+            return (
+                <el-tooltip placement="top" effect="table" content={cellData}>
+                    {{
+                        default: () => (
+                            <div style="width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {cellData}
+                            </div>
+                        )
+                    }}
+                </el-tooltip>
+            )
+        }
     },
     {
         key: 'userRole',
@@ -423,5 +435,8 @@ searchUserList()
     user-select: none;
     display: flex;
     flex-direction: column;
+    box-shadow:
+        rgb(0 0 0 / 5%) 0px 1px 1px,
+        rgb(0 0 0 / 5%) 0px 0px 1px 1px;
 }
 </style>

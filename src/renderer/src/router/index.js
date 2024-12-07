@@ -38,6 +38,11 @@ const routes = [
         component: () => import('../view/UserManage/index.vue')
     },
     {
+        path: '/CommunityManage',
+        name: '社区管理',
+        component: () => import('../view/CommunityManage/index.vue')
+    },
+    {
         path: '/setting',
         name: '设置',
         component: () => import('../view/Setting/index.vue')

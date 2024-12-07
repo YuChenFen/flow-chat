@@ -25,21 +25,79 @@
                 </UserItem>
             </div>
         </div>
-        <div v-show="currentChat" class="chat-container">
+        <div class="chat-container">
             <ChatLayout
                 v-if="currentChat"
                 v-model:current-chat="currentChat"
                 :chat-massage="chatMassage"
                 :is-loading="isLoading"
             ></ChatLayout>
-            <div class="input-container">
-                <el-input
+            <div v-else class="chat-container-empty">
+                <svg
+                    style="width: 30%; height: 30%"
+                    viewBox="0 0 1024 1024"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    p-id="2680"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                >
+                    <path
+                        d="M214.773 661.358l311.01-153.981 28.396 57.355-311.01 153.98z"
+                        fill="#B4C1F9"
+                        p-id="2681"
+                    ></path>
+                    <path
+                        d="M562.63 558.63l-45.26-45.26a30.9 30.9 0 0 0-5 6.52c6.15-11.15 94.82-190.91 152.92-309l57.42 28.24c-0.38 0.78-38.44 78.16-76.26 154.79-22.23 45-40 81-52.89 106.89-26.56 53.43-26.56 53.43-30.93 57.82z"
+                        fill="#B4C1F9"
+                        p-id="2682"
+                    ></path>
+                    <path
+                        d="M517.412 558.684l45.168-45.342 258.993 258-45.168 45.342z"
+                        fill="#B4C1F9"
+                        p-id="2683"
+                    ></path>
+                    <path
+                        d="M540.5 536.5m-180.5 0a180.5 180.5 0 1 0 361 0 180.5 180.5 0 1 0-361 0Z"
+                        fill="#7287FD"
+                        p-id="2684"
+                    ></path>
+                    <path
+                        d="M693.5 225.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
+                        fill="#68D2C8"
+                        p-id="2685"
+                    ></path>
+                    <path
+                        d="M799.5 795.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
+                        fill="#7287FD"
+                        p-id="2686"
+                    ></path>
+                    <path
+                        d="M227.5 691.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
+                        fill="#FDC005"
+                        p-id="2687"
+                    ></path>
+                </svg>
+            </div>
+            <div v-show="currentChat" class="input-container">
+                <!-- <el-input
                     v-model="inputValue"
                     placeholder="请输入问题"
                     size="large"
                     @keypress.enter="send"
                 />
-                <el-button type="primary" size="large" @click="send">发送</el-button>
+                <el-button type="primary" size="large" @click="send">发送</el-button> -->
+                <chatTextarea
+                    v-model="inputValue"
+                    placeholder="请输入问题"
+                    @keypress="
+                        ($event) => {
+                            if ($event.ctrlKey && $event.keyCode === 10) {
+                                send()
+                            }
+                        }
+                    "
+                    @send="send"
+                ></chatTextarea>
             </div>
         </div>
         <teleport to="body">
@@ -58,13 +116,13 @@ import { h, onBeforeUnmount, ref } from 'vue'
 import LLM from '../../assets/js/llm'
 import Tools from '../../assets/js/tools'
 import { useChatStore } from '../../store/chatStore'
-import Chart from '../Flow/chart'
 import Template from './template'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AddChatBox from './AddChatBox.vue'
 import UserItem from './UserItem.vue'
 import ChatLayout from './ChatLayout.vue'
 import ChatItemContextMenu from './contextMenu/ChatItemContextMenu.vue'
+import chatTextarea from '../../components/chatTextarea.vue'
 import { storeToRefs } from 'pinia'
 import { queryUser } from '../../api/user'
 import { send as sendUser } from '../../api/sse'
@@ -117,11 +175,12 @@ onBeforeUnmount(() => {
 function openAddChat() {
     const modelName = ref('')
     const modelType = ref('')
+    const modelChartData = ref([])
     const modelUserAccount = ref('')
     ElMessageBox({
         title: '新建对话',
         closeOnClickModal: false,
-        message: h(AddChatBox, { modelName, modelType, modelUserAccount })
+        message: h(AddChatBox, { modelName, modelType, modelChartData, modelUserAccount })
     }).then(async () => {
         let chat
         if (modelType.value === '用户') {
@@ -158,13 +217,20 @@ function openAddChat() {
                 avatar: '/src/assets/image/AI.png',
                 messages: []
             }
-            if (modelType.value === '结合当前知识图谱') {
+            if (modelType.value === '知识图谱') {
                 try {
-                    const INFO = new Chart().toMackdownTable()
+                    let nodeArray = []
+                    let edgeArray = []
+                    for (let i = 0; i < modelChartData.value.length; i++) {
+                        const data = JSON.parse(modelChartData.value[0].content)
+                        nodeArray = [...nodeArray, ...data.node]
+                        edgeArray = [...edgeArray, ...data.edge]
+                    }
+                    const INFO = chartToMarkdownTable(nodeArray, edgeArray)
                     chat.template = INFO
                 } catch (e) {
                     ElMessage.error({
-                        message: '当前知识图谱为空，创建失败',
+                        message: '解析JSON文件失败',
                         offset: 46
                     })
                     return
@@ -178,6 +244,18 @@ function openAddChat() {
         })
     })
 }
+function chartToMarkdownTable(nodeArray, edgeArray) {
+    let str = ''
+    str += '| 节点名称 | 节点内容 |\n'
+    nodeArray.forEach((node) => {
+        str += `| ${node.name?.replaceAll('\n', '<br>')} | ${node.content?.replaceAll('\n', '<br>')} |\n`
+    })
+    str += '\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n'
+    edgeArray.forEach((edge) => {
+        str += `| ${edge.source?.replaceAll('\n', '<br>')} | ${edge.target?.replaceAll('\n', '<br>')} | ${edge.name?.replaceAll('\n', '<br>')} | ${edge.content?.replaceAll('\n', '<br>')} |\n`
+    })
+    return str
+}
 
 function showChatItemContextMenu(chat, event) {
     event.preventDefault()
@@ -189,7 +267,7 @@ function showChatItemContextMenu(chat, event) {
 async function getTemplate(type, messages, template) {
     if (type === '普通对话') {
         return messages
-    } else if (type === '结合当前知识图谱') {
+    } else if (type === '知识图谱') {
         const query = messages[messages.length - 1].content
         let newTemplate = template
         if (config.llm.vectorDbEnable) {
@@ -266,5 +344,15 @@ async function sendAI() {
         gap: 10px;
         padding: 10px;
     }
+}
+
+.chat-container-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: grayscale(100%);
+    opacity: 0.5;
 }
 </style>
