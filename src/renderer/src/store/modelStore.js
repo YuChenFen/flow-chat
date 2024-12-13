@@ -22,6 +22,12 @@ export const useModelStore = defineStore('model', () => {
         },
         setRetrieverEnable(enable) {
             config.llm.retrieverEnable = enable
+        },
+        getRetrieverWeight() {
+            return config.llm.retrieverWeight
+        },
+        setRetrieverWeight(weight) {
+            config.llm.retrieverWeight = weight
         }
     }
 

@@ -42,6 +42,21 @@
                 <el-text class="description">在知识图谱问答时启用数据检索进行过滤</el-text>
                 <el-switch v-model="retrieverEnable" @change="modelStore.llm.setRetrieverEnable" />
             </div>
+            <div class="card">
+                <el-text size="large" class="title">混合检索权重</el-text>
+                <el-text class="description"
+                    >关键词检索和向量检索的权重划分。当为 1 时，为关键词检索；当为 0
+                    时，为向量检索</el-text
+                >
+                <el-input-number
+                    v-model="retrieverWeight"
+                    size="small"
+                    :min="0"
+                    :max="1"
+                    :step="0.1"
+                    @change="modelStore.llm.setRetrieverWeight"
+                />
+            </div>
             <h3 id="ollama">ollama</h3>
             <div class="card">
                 <el-text size="large" class="title">api地址</el-text>
@@ -145,6 +160,7 @@ const modelStore = useModelStore()
 const itemContainerRef = ref()
 const vendorName = ref(modelStore.llm.getVendorName())
 const retrieverEnable = ref(modelStore.llm.getRetrieverEnable())
+const retrieverWeight = ref(modelStore.llm.getRetrieverWeight())
 const ollamaApiUrl = ref(modelStore.ollama.getUrl())
 const ollamaLlmModel = ref(modelStore.ollama.getModel())
 const ollamaLlmModelList = ref([])

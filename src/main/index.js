@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fileManage from './fileManage'
+import { checkUpdate } from './update'
 
 const APP_NAME = 'flow chat'
 
@@ -164,7 +165,7 @@ app.whenReady().then(() => {
     ipcMain.on('showAboutMessageBox', (e) => {
         const win = BrowserWindow.fromWebContents(e.sender)
         const about = [
-            '版本：0.0.1',
+            '版本：' + app.getVersion(),
             'Electron: ' + process.versions.electron,
             'Chromium: ' + process.versions.chrome,
             'Node.js: ' + process.versions.node,
@@ -191,14 +192,7 @@ app.whenReady().then(() => {
     ipcMain.on('checkUpdate', (e) => {
         // TODO
         const win = BrowserWindow.fromWebContents(e.sender)
-        dialog.showMessageBox(win, {
-            type: 'info',
-            icon: icon,
-            title: APP_NAME,
-            message: '当前没有可用的更新',
-            buttons: ['确定'],
-            noLink: true
-        })
+        checkUpdate(win)
     })
 
     let $loginData

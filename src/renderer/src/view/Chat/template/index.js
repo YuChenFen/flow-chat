@@ -1,6 +1,25 @@
 class Template {
+    // 实体提取
+    static getNodeTemplate(__QUERY__) {
+        return [
+            {
+                role: 'user',
+                content: `你是一个实体提取的专家，能够准确提取句子中的实体。
+
+如：
+阿罗娜和普拉娜是什么关系？
+
+你的回复为：
+阿罗娜,普拉娜
+
+以下是我写的句子，请帮我找出里面的所有实体，回答中不要有多余的其他内容：
+${__QUERY__}`
+            }
+        ]
+    }
+
     // 图谱询问
-    static chatTemplate(__INFO__, __QUERY__) {
+    static chartTemplate(__INFO__, __QUERY__) {
         return [
             {
                 role: 'system',
@@ -24,6 +43,27 @@ ${__QUERY__}
 
 请用中文回答问题。
 `
+            }
+        ]
+    }
+
+    // 文档询问
+    static textTemplate(__INFO__, __QUERY__) {
+        return [
+            {
+                role: 'system',
+                content:
+                    '你是一个问答机器人，用户会给你提供一些数据和一个问题，你需要根据数据和问题回答用户问题。确保准确回答问题，不要编造答案。'
+            },
+            {
+                role: 'user',
+                content: `你是一个问答机器人。你的任务是根据给定的已知信息回答用户问题。确保你的回复完全依据下述已知信息，不要编造答案。如果下述已知信息不足以回答用户问题，请直接回复“我无法回答您的问题”。
+
+已知信息：
+${__INFO__}
+
+问题：
+${__QUERY__}`
             }
         ]
     }

@@ -22,3 +22,11 @@ npm run build:mac
 ```bash
 npm run build:linux
 ```
+
+### 安装
+
+版本用于本地构建，在安装之前请到 [flow-chat-serve](https://github.com/YuChenFen/flow-chat-serve)，运行服务端。
+
+### 文档
+
+[Flow Chat 文档](https://ycfsh.top/flow-chat-docs)

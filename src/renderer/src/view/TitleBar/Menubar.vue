@@ -362,7 +362,7 @@ const menuData = {
             type: 'item',
             text: '文档教程',
             callback: () => {
-                window.open('https://www.ycfsh.top')
+                window.open('https://ycfsh.top/flow-chat-docs')
             }
         },
         {

@@ -126,7 +126,7 @@ import chatTextarea from '../../components/chatTextarea.vue'
 import { storeToRefs } from 'pinia'
 import { queryUser } from '../../api/user'
 import { send as sendUser } from '../../api/sse'
-import { retrieverQuery } from '../../api/message'
+import { retrieverQuery, retrieverTextQuery } from '../../api/message'
 import config from '../../assets/js/config'
 
 const chatItemContextMenuX = ref(-1)
@@ -176,11 +176,18 @@ function openAddChat() {
     const modelName = ref('')
     const modelType = ref('')
     const modelChartData = ref([])
+    const modelTextData = ref([])
     const modelUserAccount = ref('')
     ElMessageBox({
         title: '新建对话',
         closeOnClickModal: false,
-        message: h(AddChatBox, { modelName, modelType, modelChartData, modelUserAccount })
+        message: h(AddChatBox, {
+            modelName,
+            modelType,
+            modelChartData,
+            modelTextData,
+            modelUserAccount
+        })
     }).then(async () => {
         let chat
         if (modelType.value === '用户') {
@@ -235,6 +242,12 @@ function openAddChat() {
                     })
                     return
                 }
+            } else if (modelType.value === '文本文档') {
+                let INFO = ''
+                for (let i = 0; i < modelTextData.value.length; i++) {
+                    INFO += modelTextData.value[i].content
+                }
+                chat.template = INFO
             }
         }
         chatList.value.push(chat)
@@ -283,9 +296,27 @@ async function getTemplate(type, messages, template) {
         const query = messages[messages.length - 1].content
         let newTemplate = template
         if (config.llm.retrieverEnable) {
-            newTemplate = await retrieverQuery(template, query)
+            const relatedNode = await LLM.chat(Template.getNodeTemplate(query))
+            newTemplate = await retrieverQuery(
+                template,
+                relatedNode.split(','),
+                100,
+                config.llm.retrieverWeight
+            )
         }
-        return Template.chatTemplate(newTemplate, query)
+        return Template.chartTemplate(newTemplate, query)
+    } else if (type === '文本文档') {
+        const query = messages[messages.length - 1].content
+        let newTemplate = template
+        if (config.llm.retrieverEnable) {
+            newTemplate = await retrieverTextQuery(
+                template.replaceAll('\n\n', '\n'),
+                query,
+                100,
+                config.llm.retrieverWeight
+            )
+        }
+        return Template.textTemplate(newTemplate, query)
     } else {
         return messages
     }

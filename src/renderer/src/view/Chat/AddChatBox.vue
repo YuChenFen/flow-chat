@@ -3,8 +3,9 @@
         <div class="item">
             <el-text class="mx-1">会话类型</el-text>
             <el-select v-model="modelType" placeholder="请选择会话类型">
-                <el-option label="普通对话" value="普通对话"></el-option>
                 <el-option label="知识图谱" value="知识图谱"></el-option>
+                <el-option label="文本文档" value="文本文档"></el-option>
+                <el-option label="普通对话" value="普通对话"></el-option>
                 <el-option label="用户" value="用户"></el-option>
             </el-select>
         </div>
@@ -39,21 +40,51 @@
                 </el-tag>
             </div>
         </div>
+        <div v-if="modelType === '文本文档'">
+            <div class="item">
+                <el-text class="mx-1">上传文件</el-text>
+                <div style="width: 100%">
+                    <el-upload :http-request="uploadContent" :show-file-list="false">
+                        <template #trigger>
+                            <el-button type="primary">文本文件</el-button>
+                        </template>
+                    </el-upload>
+                </div>
+            </div>
+            <div style="width: 100%; overflow-x: auto; display: flex; gap: 5px; user-select: none">
+                <el-tag
+                    v-for="(file, index) in modelTextData"
+                    :key="index"
+                    size="large"
+                    closable
+                    @close="modelTextData.splice(index, 1)"
+                >
+                    {{ file.name }}
+                </el-tag>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { useAttrs } from 'vue'
 
-const { modelName, modelType, modelChartData, modelUserAccount } = useAttrs()
+const { modelName, modelType, modelChartData, modelTextData, modelUserAccount } = useAttrs()
 
 function uploadContent(file) {
     const reader = new FileReader()
     reader.onload = (e) => {
-        modelChartData.value.push({
-            name: file.file.name,
-            content: e.target.result
-        })
+        if (modelType.value === '知识图谱') {
+            modelChartData.value.push({
+                name: file.file.name,
+                content: e.target.result
+            })
+        } else if (modelType.value === '文本文档') {
+            modelTextData.value.push({
+                name: file.file.name,
+                content: e.target.result
+            })
+        }
     }
     reader.readAsText(file.file)
 }

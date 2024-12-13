@@ -13,35 +13,27 @@
         <div style="display: flex; justify-content: space-between; gap: 25px; margin-bottom: 50px">
             <div style="flex: 1">
                 <h4 class="font-weight-bold" style="margin-bottom: 10px">接口情况</h4>
-                <ol class="interface-list">
-                    <li>
-                        <el-text class="interface-name">
-                            <span
-                                class="interface-dot"
-                                :class="ollamaInterface ? 'yes' : 'no'"
-                            ></span>
-                            ollama
-                        </el-text>
-                    </li>
-                    <li>
-                        <el-text class="interface-name">
-                            <span
-                                class="interface-dot"
-                                :class="siliconflowInterface ? 'yes' : 'no'"
-                            ></span>
-                            siliconflow
-                        </el-text>
-                    </li>
-                    <li>
-                        <el-text class="interface-name">
-                            <span
-                                class="interface-dot"
-                                :class="zhipuaiInterface ? 'yes' : 'no'"
-                            ></span>
-                            智谱AI
-                        </el-text>
-                    </li>
-                </ol>
+                <div class="interface-card-container">
+                    <div
+                        v-for="item in llmInterface"
+                        :key="item.name"
+                        class="interface-card"
+                        @click="openWeb(item.web)"
+                    >
+                        <div class="interface-card-title">
+                            <el-image
+                                style="width: 1rem; height: 1rem"
+                                :src="item.icon"
+                                fit="contain"
+                            />
+                            <span>{{ item.name }}</span>
+                        </div>
+                        <el-icon :color="item.active ? '#67c23a' : '#f56c6c'">
+                            <SuccessFilled v-if="item.active" />
+                            <CircleCloseFilled v-else />
+                        </el-icon>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -52,39 +44,43 @@ import Siliconflow from '@renderer/assets/js/llm/siliconflow'
 import ZhiPuAi from '@renderer/assets/js/llm/zhipuai'
 import { onMounted, ref } from 'vue'
 
-const ollamaInterface = ref(false)
-const siliconflowInterface = ref(false)
-const zhipuaiInterface = ref(false)
+const llmInterface = ref([
+    {
+        name: 'ollama',
+        icon: 'https://ollama.com/public/ollama.png',
+        web: 'https://ollama.com/',
+        url: Ollama.url,
+        active: false
+    },
+    {
+        name: 'siliconflow',
+        icon: 'https://framerusercontent.com/images/4li2PjWxZJmoGkzXRMJWU1rJmI.svg',
+        web: 'https://siliconflow.cn/zh-cn/',
+        url: Siliconflow.url,
+        active: false
+    },
+    {
+        name: 'zhipuai',
+        icon: 'https://bigmodel.cn/img/icons/favicon-32x32.png',
+        web: 'https://bigmodel.cn/',
+        url: ZhiPuAi.url,
+        active: false
+    }
+])
 
 onMounted(async () => {
-    testOllama()
-    testSiliconflow()
-    testZhipuai()
+    for (let i = 0; i < llmInterface.value.length; i++) {
+        try {
+            await fetch(llmInterface.value[i].url)
+            llmInterface.value[i].active = true
+        } catch (e) {
+            llmInterface.value[i].active = false
+        }
+    }
 })
 
-async function testOllama() {
-    try {
-        await fetch(Ollama.url)
-        ollamaInterface.value = true
-    } catch (e) {
-        ollamaInterface.value = false
-    }
-}
-async function testSiliconflow() {
-    try {
-        await fetch(Siliconflow.url)
-        siliconflowInterface.value = true
-    } catch (e) {
-        siliconflowInterface.value = false
-    }
-}
-async function testZhipuai() {
-    try {
-        await fetch(ZhiPuAi.url)
-        zhipuaiInterface.value = true
-    } catch (e) {
-        zhipuaiInterface.value = false
-    }
+function openWeb(url) {
+    window.open(url)
 }
 </script>
 
@@ -106,45 +102,42 @@ async function testZhipuai() {
         font-weight: 900;
     }
 }
+
 .font-weight-bold {
     font-weight: bold;
 }
 
-.interface-list {
-    display: flex;
-    flex-direction: column;
+.interface-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    user-select: none;
 
-    li {
-        margin: 5px 0;
-        padding-left: 25px;
-        list-style-type: none;
-        box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
-        /* border: 1px solid #cdcdcd; */
+    .interface-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: rgba(60, 64, 67, 0.15) 0px 0px 0px 1px;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
 
-        .interface-dot {
-            display: inline-block;
-            width: 0.7rem;
-            height: 0.7rem;
-            border-radius: 50%;
-            margin-right: 10px;
+        &:hover {
+            box-shadow: rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            transform: translateY(-2px);
+            background-color: #f6f6f6;
         }
-        .interface-dot.yes {
-            background-color: #00d400;
-        }
-        .interface-dot.no {
-            background-color: #d40000;
-        }
-        .interface-name {
-            font-size: 1.1rem;
+
+        .interface-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     }
 }
 
-.cell-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
 ::-webkit-scrollbar {
     width: 0px;
 }

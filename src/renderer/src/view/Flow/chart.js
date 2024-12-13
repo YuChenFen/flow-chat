@@ -695,40 +695,40 @@ class Chart {
                     content: relationship[i].relationship_description
                 })
             }
-            entityRelationshipTemplate.push({
-                role: 'user',
-                content:
-                    '在上次提取中缺少许多实体和对应的实体之间关系。 使用相同的格式在下面添加它们，回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。:'
-            })
-            const reEntityRelationshipText = await LLM.chat(entityRelationshipTemplate)
-            console.log(reEntityRelationshipText)
-            const { entity: reEntity, relationship: reRelationship } =
-                JSON.parse(reEntityRelationshipText)
-            for (let i = 0; i < reEntity.length; i++) {
-                // eslint-disable-next-line no-prototype-builtins
-                if (!nodeList.hasOwnProperty(reEntity[i].entity_name)) {
-                    nodeList[reEntity[i].entity_name] = {
-                        name: reEntity[i].entity_name,
-                        category: reEntity[i].entity_type,
-                        content: `- ${reEntity[i].entity_description}`
-                    }
-                } else if (
-                    nodeList[reEntity[i].entity_name].content.indexOf(
-                        reEntity[i].entity_description
-                    ) === -1
-                ) {
-                    nodeList[reEntity[i].entity_name].content +=
-                        `\n- ${reEntity[i].entity_description}`
-                }
-            }
-            for (let i = 0; i < reRelationship.length; i++) {
-                edges.push({
-                    source: reRelationship[i].source_entity,
-                    target: reRelationship[i].target_entity,
-                    name: reRelationship[i].relationship_keywords,
-                    content: reRelationship[i].relationship_description
-                })
-            }
+            // entityRelationshipTemplate.push({
+            //     role: 'user',
+            //     content:
+            //         '在上次提取中缺少许多实体和对应的实体之间关系。 使用相同的格式在下面添加它们，回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。:'
+            // })
+            // const reEntityRelationshipText = await LLM.chat(entityRelationshipTemplate)
+            // console.log(reEntityRelationshipText)
+            // const { entity: reEntity, relationship: reRelationship } =
+            //     JSON.parse(reEntityRelationshipText)
+            // for (let i = 0; i < reEntity.length; i++) {
+            //     // eslint-disable-next-line no-prototype-builtins
+            //     if (!nodeList.hasOwnProperty(reEntity[i].entity_name)) {
+            //         nodeList[reEntity[i].entity_name] = {
+            //             name: reEntity[i].entity_name,
+            //             category: reEntity[i].entity_type,
+            //             content: `- ${reEntity[i].entity_description}`
+            //         }
+            //     } else if (
+            //         nodeList[reEntity[i].entity_name].content.indexOf(
+            //             reEntity[i].entity_description
+            //         ) === -1
+            //     ) {
+            //         nodeList[reEntity[i].entity_name].content +=
+            //             `\n- ${reEntity[i].entity_description}`
+            //     }
+            // }
+            // for (let i = 0; i < reRelationship.length; i++) {
+            //     edges.push({
+            //         source: reRelationship[i].source_entity,
+            //         target: reRelationship[i].target_entity,
+            //         name: reRelationship[i].relationship_keywords,
+            //         content: reRelationship[i].relationship_description
+            //     })
+            // }
             for (let key in nodeList) {
                 nodes.push(nodeList[key])
                 if (categories.indexOf(nodeList[key].category) == -1) {

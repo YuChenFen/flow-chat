@@ -138,7 +138,7 @@ class Template {
             {
                 role: 'system',
                 content:
-                    '你是一个专业的实体识别模型，你的任务是识别并提取用户提供的文本文档中所有实体，并返回一个JSON列表。回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。'
+                    '你是一个专门从文本中提取实体和关系的专家，现在需要帮用户提取文档中所有实体和关系，并返回一个JSON列表。回答为JSON字符串类型，不需要有代码块的表示，如 **```json```**，能够用javascript的JSON.parse()方法解析。'
             },
             {
                 role: 'user',
@@ -205,7 +205,7 @@ ${JSON.stringify(output)}
 Entity_types: [${entityTypes}]
 Text: ${inputText}
 
-Output:
+Output，回答中不要有多余的其他内容:
 `
             }
         ]

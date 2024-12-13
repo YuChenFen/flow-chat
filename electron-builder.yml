@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: flow.chat
+productName: FlowChat
 directories:
   buildResources: build
 files:

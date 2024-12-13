@@ -28,6 +28,7 @@ try {
         llm: {
             vendor: 'ollama',
             retrieverEnable: true,
+            retrieverWeight: 0.5,
             ollama: {
                 url: 'http://localhost:11434',
                 model: ''
