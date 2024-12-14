@@ -50,11 +50,23 @@
                 >
                 <el-input-number
                     v-model="retrieverWeight"
+                    :disabled="!retrieverEnable"
                     size="small"
                     :min="0"
                     :max="1"
                     :step="0.1"
                     @change="modelStore.llm.setRetrieverWeight"
+                />
+            </div>
+            <div class="card">
+                <el-text size="large" class="title">重排序</el-text>
+                <el-text class="description">
+                    在知识图谱问答时，对检索到的数据进行二次排序，以获取更准确的答案。
+                </el-text>
+                <el-switch
+                    v-model="retrieverRerankEnable"
+                    :disabled="!retrieverEnable"
+                    @change="modelStore.llm.setRetrieverRerankEnable"
                 />
             </div>
             <h3 id="ollama">ollama</h3>
@@ -161,6 +173,7 @@ const itemContainerRef = ref()
 const vendorName = ref(modelStore.llm.getVendorName())
 const retrieverEnable = ref(modelStore.llm.getRetrieverEnable())
 const retrieverWeight = ref(modelStore.llm.getRetrieverWeight())
+const retrieverRerankEnable = ref(modelStore.llm.getRetrieverRerankEnable())
 const ollamaApiUrl = ref(modelStore.ollama.getUrl())
 const ollamaLlmModel = ref(modelStore.ollama.getModel())
 const ollamaLlmModelList = ref([])

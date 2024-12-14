@@ -18,10 +18,14 @@ import Tools from '../../assets/js/tools'
 import Chart from '../Flow/chart'
 import TitlebarMenu from './TitlebarMenu.vue'
 import { useRouter } from 'vue-router'
-import { h } from 'vue'
+import { computed, h, ref } from 'vue'
 import CollaborationBox from './box/CollaborationBox.vue'
+import StateIcon from './stateIcon.vue'
+import config from '../../assets/js/config'
 
 const router = useRouter()
+const theme = ref(config.theme)
+document.documentElement.classList.add(theme.value)
 
 const menuData = {
     文件: [
@@ -341,6 +345,42 @@ const menuData = {
             callback: () => {
                 window.location.reload()
             }
+        },
+        {
+            type: 'menu',
+            text: '样式',
+            children: [
+                {
+                    type: 'item',
+                    text: '浅色',
+                    icon: h(StateIcon, {
+                        state: computed(() => {
+                            return theme.value === 'light'
+                        })
+                    }),
+                    callback: () => {
+                        theme.value = 'light'
+                        config.theme = 'light'
+                        document.documentElement.classList.remove('dark')
+                        document.documentElement.classList.add('light')
+                    }
+                },
+                {
+                    type: 'item',
+                    text: '深色',
+                    icon: h(StateIcon, {
+                        state: computed(() => {
+                            return theme.value === 'dark'
+                        })
+                    }),
+                    callback: () => {
+                        theme.value = 'dark'
+                        config.theme = 'dark'
+                        document.documentElement.classList.remove('light')
+                        document.documentElement.classList.add('dark')
+                    }
+                }
+            ]
         },
         {
             type: 'item',

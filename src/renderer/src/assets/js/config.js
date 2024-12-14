@@ -27,8 +27,13 @@ try {
         },
         llm: {
             vendor: 'ollama',
-            retrieverEnable: true,
-            retrieverWeight: 0.5,
+            retriever: {
+                enable: true,
+                weight: 0.5,
+                rerank: {
+                    enable: true
+                }
+            },
             ollama: {
                 url: 'http://localhost:11434',
                 model: ''

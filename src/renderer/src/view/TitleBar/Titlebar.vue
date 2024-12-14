@@ -71,8 +71,8 @@ import Menubar from './Menubar.vue'
     justify-content: space-between;
     user-select: none;
     box-shadow:
-        rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-        rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        rgba(var(--app-box-shadow-color), 0.05) 0px 6px 24px 0px,
+        rgba(var(--app-box-shadow-color), 0.08) 0px 0px 0px 1px;
 
     & .titlebar-drag-region {
         display: block;

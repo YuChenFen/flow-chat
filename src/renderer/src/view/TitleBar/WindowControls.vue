@@ -81,11 +81,21 @@ function minimize() {
     }
 
     &[maximize]:hover {
-        background-color: #cacacae9;
+        background-color: #9898982a;
     }
 
     &[minimize]:hover {
-        background-color: #cacacae9;
+        background-color: #9898982a;
+    }
+}
+
+html.dark .controls-button {
+    &[maximize]:hover {
+        background-color: #a2a2a22a;
+    }
+
+    &[minimize]:hover {
+        background-color: #a2a2a22a;
     }
 }
 </style>

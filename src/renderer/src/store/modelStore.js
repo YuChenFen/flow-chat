@@ -18,16 +18,22 @@ export const useModelStore = defineStore('model', () => {
             return Object.keys(LLM.vendorName)
         },
         getRetrieverEnable() {
-            return config.llm.retrieverEnable
+            return config.llm.retriever.enable
         },
         setRetrieverEnable(enable) {
-            config.llm.retrieverEnable = enable
+            config.llm.retriever.enable = enable
         },
         getRetrieverWeight() {
-            return config.llm.retrieverWeight
+            return config.llm.retriever.weight
         },
         setRetrieverWeight(weight) {
-            config.llm.retrieverWeight = weight
+            config.llm.retriever.weight = weight
+        },
+        getRetrieverRerankEnable() {
+            return config.llm.retriever.rerank.enable
+        },
+        setRetrieverRerankEnable(enable) {
+            config.llm.retriever.rerank.enable = enable
         }
     }
 

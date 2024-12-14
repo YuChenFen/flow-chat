@@ -42,16 +42,23 @@ body, #app {
 }
 .el-popper.is-table {
   padding: 6px 12px;
-  background: #ffffff;
-  border: 1px solid #e4e7ed;
-  box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.1);
+  background: var(--app-them-color);
+  color: var(--app-color);
+  border: 1px solid rgba(var(--app-box-shadow-color), 0.2);
+  box-shadow: 1px 2px 12px 0 rgba(var(--app-box-shadow-color), 0.05);
 }
 .el-popper.is-table .el-popper__arrow::before {
-  background: #ffffff;
-  border-right: 1px solid #e4e7ed;
-  border-bottom: 1px solid #e4e7ed;
-  box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.1);
+  background: var(--app-them-color);
+  border-right: 1px solid rgba(var(--app-box-shadow-color), 0.2);
+  border-bottom: 1px solid rgba(var(--app-box-shadow-color), 0.2);
+  box-shadow: 6px 6px 12px 0 rgba(var(--app-box-shadow-color), 0.05);
   right: 0;
+}
+.el-anchor{
+  background-color: transparent !important;
+}
+html.dark .el-input__wrapper{
+  background-color: #292929!important;
 }
 :root{
   --el-menu-base-level-padding: 10px !important;

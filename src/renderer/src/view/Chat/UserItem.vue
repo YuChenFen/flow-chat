@@ -66,4 +66,8 @@ const changeChat = () => {
     background-color: #ecf5ffb9;
     border-left-color: #0099ff;
 }
+
+html.dark .chat-item.active {
+    background-color: #213e5e;
+}
 </style>

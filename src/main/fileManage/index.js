@@ -48,8 +48,13 @@ function loadConfig() {
         },
         llm: {
             vendor: '',
-            retrieverEnable: true,
-            retrieverWeight: 0.5,
+            retriever: {
+                enable: true,
+                weight: 0.5,
+                rerank: {
+                    enable: true
+                }
+            },
             ollama: {
                 url: 'http://localhost:11434',
                 model: ''
@@ -62,7 +67,8 @@ function loadConfig() {
                 apiKey: '',
                 model: ''
             }
-        }
+        },
+        theme: 'light'
     }
     try {
         const data = readFile('config.json')

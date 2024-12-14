@@ -151,6 +151,25 @@ getUserInfo().then((res) => {
     }
 }
 
+html.dark .messages {
+    .user {
+        .content {
+            background-color: #06c;
+            color: #fff;
+        }
+    }
+    .assistant,
+    .others {
+        .content {
+            background-color: #3b3b3b;
+
+            :deep(*) {
+                color: #f3f3f3 !important;
+            }
+        }
+    }
+}
+
 .loader {
     width: 24px;
     height: 24px;

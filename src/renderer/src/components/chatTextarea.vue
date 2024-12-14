@@ -39,7 +39,7 @@ const send = () => {
     outline: none;
     font-size: 14px;
     line-height: 24px;
-    background-color: #fff;
+    backdrop-filter: blur(15px);
     color: #333;
     overflow-y: scroll;
     border: 1px solid #ccc;

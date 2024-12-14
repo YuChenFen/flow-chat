@@ -2,7 +2,10 @@
     <div ref="menuRef" class="menu">
         <div v-for="(item, index) in props.menu" :key="index">
             <div v-if="item.type === 'item'" class="menu-item" @click="click(item.callback)">
-                <p>{{ item.text }}</p>
+                <div style="display: flex; align-items: center">
+                    <component :is="item.icon" />
+                    <p>{{ item.text }}</p>
+                </div>
                 <p>{{ item.key }}</p>
             </div>
             <div v-else-if="item.type === 'line'" class="line"></div>

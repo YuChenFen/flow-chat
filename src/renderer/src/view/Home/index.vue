@@ -117,7 +117,7 @@ function openWeb(url) {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        box-shadow: rgba(60, 64, 67, 0.15) 0px 0px 0px 1px;
+        box-shadow: rgba(var(--app-box-shadow-color), 0.15) 0px 0px 0px 1px;
         gap: 10px;
         padding: 10px;
         border-radius: 5px;
@@ -125,9 +125,10 @@ function openWeb(url) {
         transition: all 0.2s ease;
 
         &:hover {
-            box-shadow: rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            box-shadow: rgba(var(--app-box-shadow-color), 0.15) 0px 1px 2px 1px;
             transform: translateY(-2px);
-            background-color: #f6f6f6;
+            background-color: var(--app-hover-color);
+            color: var(--app-color);
         }
 
         .interface-card-title {

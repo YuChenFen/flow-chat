@@ -176,8 +176,12 @@ onBeforeUnmount(() => {
 .flow-container {
     background-size: 25px 25px;
     background-position: center center;
-    background-image: linear-gradient(to right, #cbd5e1 0.5px, transparent 0.5px),
-        linear-gradient(to bottom, #cbd5e1 0.5px, transparent 0.5px);
+    background-image: linear-gradient(
+            to right,
+            rgba(var(--app-flow-line-color)) 0.5px,
+            transparent 0.5px
+        ),
+        linear-gradient(to bottom, rgba(var(--app-flow-line-color)) 0.5px, transparent 0.5px);
     /* -webkit-mask-image: linear-gradient(
             to bottom,
             transparent,

@@ -35,8 +35,7 @@ export async function retrieverQuery(text, words, n = 100, weight = 0.5) {
             'Content-Type': 'application/json'
         }
     )
-    const results = `| 节点名称 | 节点内容 |\n| - | - |\n${data.nodes_results.join('\n')}\n\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n| - | - | - | - |\n${data.edges_results.join('\n')}`
-    return results
+    return data
 }
 
 export async function retrieverTextQuery(text, query, n = 100, weight = 0.5) {
@@ -48,4 +47,15 @@ export async function retrieverTextQuery(text, query, n = 100, weight = 0.5) {
         }
     )
     return data.join('\n')
+}
+
+export async function retrieverRerank(documents, query, n = 100) {
+    const { data } = await $post(
+        '/db/message/retriever/rerank',
+        JSON.stringify({ documents, query, n }),
+        {
+            'Content-Type': 'application/json'
+        }
+    )
+    return data
 }

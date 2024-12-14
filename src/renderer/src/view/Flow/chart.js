@@ -221,6 +221,12 @@ class Chart {
             const option = this.getOption()
             for (let i = 0; i < option.series[0].data.length; i++) {
                 if (option.series[0].data[i].name === node.name) {
+                    ElMessage({
+                        message: '节点已存在',
+                        type: 'warning',
+                        offset: 46,
+                        duration: 1000
+                    })
                     console.log('已存在')
                     return
                 }

@@ -24,7 +24,10 @@
                     </template>
                 </el-input>
             </div>
-            <div ref="userListContainer" style="flex: 1; display: flex; justify-content: center">
+            <div
+                ref="userListContainer"
+                style="flex: 1; display: flex; justify-content: flex-start; padding: 5px 0 0 10px"
+            >
                 <el-table-v2
                     :columns="columns"
                     :data="data"
@@ -429,7 +432,7 @@ searchUserList()
 <style scoped>
 .user-list {
     flex: 1;
-    background-color: #ffffff;
+    background-color: var(--app-them-color);
     width: 100%;
     border-radius: 5px;
     user-select: none;

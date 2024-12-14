@@ -126,7 +126,7 @@ import chatTextarea from '../../components/chatTextarea.vue'
 import { storeToRefs } from 'pinia'
 import { queryUser } from '../../api/user'
 import { send as sendUser } from '../../api/sse'
-import { retrieverQuery, retrieverTextQuery } from '../../api/message'
+import { retrieverQuery, retrieverRerank, retrieverTextQuery } from '../../api/message'
 import config from '../../assets/js/config'
 
 const chatItemContextMenuX = ref(-1)
@@ -295,26 +295,34 @@ async function getTemplate(type, messages, template) {
     } else if (type === '知识图谱') {
         const query = messages[messages.length - 1].content
         let newTemplate = template
-        if (config.llm.retrieverEnable) {
+        if (config.llm.retriever.enable) {
             const relatedNode = await LLM.chat(Template.getNodeTemplate(query))
-            newTemplate = await retrieverQuery(
+            let data = await retrieverQuery(
                 template,
                 relatedNode.split(','),
                 100,
-                config.llm.retrieverWeight
+                config.llm.retriever.weight
             )
+            if (config.llm.retriever.rerank.enable) {
+                data.nodes_results = await retrieverRerank(data.nodes_results, query, 100)
+                data.edges_results = await retrieverRerank(data.edges_results, query, 100)
+            }
+            newTemplate = `| 节点名称 | 节点内容 |\n| - | - |\n${data.nodes_results.join('\n')}\n\n| 源节点 | 目标节点 | 关系名称 | 关系内容 |\n| - | - | - | - |\n${data.edges_results.join('\n')}`
         }
         return Template.chartTemplate(newTemplate, query)
     } else if (type === '文本文档') {
         const query = messages[messages.length - 1].content
         let newTemplate = template
-        if (config.llm.retrieverEnable) {
+        if (config.llm.retriever.enable) {
             newTemplate = await retrieverTextQuery(
                 template.replaceAll('\n\n', '\n'),
                 query,
                 100,
-                config.llm.retrieverWeight
+                config.llm.retriever.weight
             )
+        }
+        if (config.llm.retriever.enable) {
+            newTemplate = await Tools.copyToClipboard(newTemplate)
         }
         return Template.textTemplate(newTemplate, query)
     } else {
@@ -380,13 +388,16 @@ async function sendAI() {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-image: linear-gradient(120deg, #fbf4ff7a 0%, #ddebff7a 100%);
+    background-image: linear-gradient(120deg, #fbf3ff 0%, #d8ebff 100%);
 
     .input-container {
         display: flex;
         gap: 10px;
         padding: 10px;
     }
+}
+html.dark .chat-container {
+    background-image: linear-gradient(120deg, #2f2932 0%, #121c2d 100%);
 }
 
 .chat-container-empty {

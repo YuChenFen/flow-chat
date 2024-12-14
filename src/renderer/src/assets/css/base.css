@@ -7,25 +7,37 @@ html {
   --titlebar-color: #6b6b6b;
   --body-background-color: #f6f6f6;
   --body-color: #494949;
-  --sidebar-background-color: #ffffff;
-  --sidebar-hover-background-color: #e7e7e7;
-  --sidebar-color: #949494;
+
+  --app-box-shadow-color: 0, 0, 0;
 
   --titlebar-hover-background-color: #eeeeee;
   --titlebar-menu-background-color: #fdfdfd;
   --titlebar-menu-hover-background-color: #e7e7e7;
   --titlebar-menu-item-color: #6b6b6b;
+
+  --app-hover-color: #e7e7e7;
+  --app-color: #494949;
+  --app-them-color: #ffffff;
+  --app-flow-line-color: 203, 213, 255;
 }
 
-html[theme='dark'] {
-  --titlebar-background-color: #000000cd;
+html.dark {
+  --titlebar-background-color: #292929;
   --titlebar-color: #ffffffcf;
   --body-background-color: #292929;
   --body-color: #ffffffcf;
 
+  --app-box-shadow-color: 255, 255, 255;
+
   --titlebar-hover-background-color: #79797970;
   --titlebar-menu-background-color: #2a2a2a;
   --titlebar-menu-hover-background-color: #3a3a3a;
+  --titlebar-menu-item-color: #ffffffcf;
+
+  --app-hover-color: #79797970;
+  --app-color: #ffffffcf;
+  --app-them-color: #141414;
+  --app-flow-line-color: 255, 255, 255, 0.15;
 }
 
 /* 字体 */
