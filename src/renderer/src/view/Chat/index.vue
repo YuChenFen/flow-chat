@@ -394,6 +394,12 @@ async function sendAI() {
         display: flex;
         gap: 10px;
         padding: 10px;
+        height: calc(3rem + 20px);
+        transition: height 0.2s ease-in-out;
+
+        &:focus-within {
+            height: calc(6rem + 20px);
+        }
     }
 }
 html.dark .chat-container {

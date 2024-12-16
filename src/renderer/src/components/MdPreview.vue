@@ -4,7 +4,7 @@
         :model-value="text"
         :auto-fold-threshold="999999999"
         v-bind="attrs"
-        style="background: transparent"
+        style="background: transparent; border: 0"
     />
 </template>
 
@@ -24,5 +24,9 @@ const attrs = useAttrs()
 .md-editor-preview-wrapper {
     padding: 0 !important;
     background: transparent !important;
+}
+
+html.dark .md-editor-preview {
+    color: var(--app-color);
 }
 </style>

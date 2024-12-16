@@ -27,7 +27,7 @@ const send = () => {
     justify-content: flex-end;
     align-items: flex-end;
     width: 100%;
-    height: 6rem;
+    height: 100%;
 }
 
 .chat-textarea textarea {
@@ -40,7 +40,7 @@ const send = () => {
     font-size: 14px;
     line-height: 24px;
     backdrop-filter: blur(15px);
-    color: #333;
+    color: var(--app-color);
     overflow-y: scroll;
     border: 1px solid #ccc;
     padding: 5px 10px;
@@ -67,7 +67,7 @@ const send = () => {
     border-radius: 5px;
     cursor: pointer;
     right: 10px;
-    bottom: 10px;
+    bottom: 8px;
     transition: all 0.1s ease-in-out;
 
     span {

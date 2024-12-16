@@ -14,7 +14,7 @@
 import { h, nextTick } from 'vue'
 import ContextMenuView from '../../../components/ContextMenuView/ContextMenuView.vue'
 import Chart from '../chart.js'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import MdPreview from '@renderer/components/MdPreview.vue'
 const props = defineProps({
     x: {
@@ -43,6 +43,17 @@ const dataArray = [
         label: '查看内容'
     },
     {
+        label: '内容',
+        list: [
+            {
+                label: '展开'
+            },
+            {
+                label: '收起'
+            }
+        ]
+    },
+    {
         label: 'AI 扩展'
     }
 ]
@@ -62,6 +73,62 @@ function onClick(item) {
             dangerouslyUseHTMLString: true,
             showConfirmButton: false
         })
+    } else if (item.label === '展开') {
+        let option = chartInstance.getOption()
+        const set = new Set()
+        const nodeName = props.currentNode.name
+        const edges = option.series[0].links
+        edges.forEach((edge) => {
+            if (edge.source === nodeName && !set.has(edge.target)) {
+                set.add(edge.target)
+            }
+        })
+        if (set.size === 0) {
+            ElMessage({
+                message: '没有可以展开的节点',
+                type: 'warning',
+                offset: 46,
+                duration: 1000
+            })
+            return
+        }
+        option.series[0].data.forEach((node) => {
+            if (set.has(node.name)) {
+                if (node.category === -1) {
+                    node.category = node.tempCategory
+                }
+                delete node.tempCategory
+            }
+        })
+        chartInstance.setOption(option)
+    } else if (item.label === '收起') {
+        let option = chartInstance.getOption()
+        const set = new Set()
+        const nodeName = props.currentNode.name
+        const edges = option.series[0].links
+        edges.forEach((edge) => {
+            if (edge.source === nodeName && !set.has(edge.target)) {
+                set.add(edge.target)
+            }
+        })
+        if (set.size === 0) {
+            ElMessage({
+                message: '该节点无子节点',
+                type: 'warning',
+                offset: 46,
+                duration: 1000
+            })
+            return
+        }
+        option.series[0].data.forEach((node) => {
+            if (set.has(node.name)) {
+                if (node.category !== -1) {
+                    node.tempCategory = node.category
+                }
+                node.category = -1
+            }
+        })
+        chartInstance.setOption(option)
     } else if (item.label === 'AI 扩展') {
         chartInstance.aiExtend(props.currentNode)
     }

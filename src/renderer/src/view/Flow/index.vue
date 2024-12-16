@@ -87,7 +87,6 @@ function chartdbClick(e) {
     // console.log(e)
 }
 function chartContextmenu(e) {
-    console.log(e)
     if (e.dataType === 'node') {
         nodeContextmenuX.value = e.event.event.x
         nodeContextmenuY.value = e.event.event.y

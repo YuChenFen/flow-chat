@@ -72,6 +72,7 @@ class Chart {
             tooltip: {
                 show: config.chart.tooltip.show,
                 confine: true,
+                className: 'app-echarts-tooltip',
                 // alwaysShowContent: true,
                 formatter: function (params) {
                     const vnode = h(MdPreview, {
@@ -82,6 +83,7 @@ class Chart {
                     container.style.maxHeight = '500px'
                     container.style.whiteSpace = 'pre-wrap'
                     container.style.overflowY = 'scroll'
+                    container.style.padding = '5px 10px'
                     render(vnode, container)
                     return container
                 }
@@ -630,9 +632,21 @@ class Chart {
      * @return {string} 图片base64
      */
     toImage() {
-        const base64 = this.chart.getDataURL({
+        const canvas = document.createElement('canvas')
+        const option = this.getOption()
+        const size = option.series[0].data.length * 20
+        canvas.width = size
+        canvas.height = size
+        const newChart = init(canvas, null, {
+            ssr: true,
+            width: size,
+            height: size
+        })
+        newChart.setOption(this.getOption())
+        const base64 = newChart.getDataURL({
             pixelRatio: 2
         })
+        newChart.dispose()
         return base64
     }
 

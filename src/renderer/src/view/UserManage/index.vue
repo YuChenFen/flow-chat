@@ -26,7 +26,7 @@
             </div>
             <div
                 ref="userListContainer"
-                style="flex: 1; display: flex; justify-content: flex-start; padding: 5px 0 0 10px"
+                style="flex: 1; display: flex; justify-content: flex-start; padding: 15px 0 0 10px"
             >
                 <el-table-v2
                     :columns="columns"
@@ -163,6 +163,7 @@ const columns = [
     {
         key: 'selection',
         width: 50,
+        align: 'center',
         cellRenderer: ({ rowData }) => {
             const onChange = (value) => (rowData.checked = value)
             return <SelectionCell value={rowData.checked} onChange={onChange} />
@@ -316,7 +317,7 @@ const columns = [
     {
         key: 'operations',
         title: '操作',
-        width: 150,
+        width: 160,
         fixed: TableV2FixedDir.RIGHT,
         cellRenderer: ({ rowData }) => {
             let isDeleteRef
@@ -432,14 +433,17 @@ searchUserList()
 <style scoped>
 .user-list {
     flex: 1;
-    background-color: var(--app-them-color);
+    background-color: var(--app-theme-color);
     width: 100%;
     border-radius: 5px;
     user-select: none;
     display: flex;
     flex-direction: column;
     box-shadow:
-        rgb(0 0 0 / 5%) 0px 1px 1px,
-        rgb(0 0 0 / 5%) 0px 0px 1px 1px;
+        rgb(var(--app-box-shadow-color), 0.05) 0px 1px 1px,
+        rgb(var(--app-box-shadow-color), 0.05) 0px 0px 1px 1px;
+}
+html.dark .user-list {
+    background-image: linear-gradient(300deg, #161d23 0%, #1c1c1c 100%);
 }
 </style>

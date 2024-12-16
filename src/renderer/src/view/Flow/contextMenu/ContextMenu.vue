@@ -84,6 +84,9 @@ const dataArray = [
                 label: '修改类别'
             }
         ]
+    },
+    {
+        label: '收起全部节点'
     }
 ]
 function onClick(item) {
@@ -103,6 +106,29 @@ function onClick(item) {
         currentCategoryName.value = ''
         isChangeCategoryName.value = true
         categoryDrawer.value = true
+    } else if (item.label === '收起全部节点') {
+        const option = chartInstance.getOption()
+        const set = new Set()
+        const edges = option.series[0].links
+        edges.forEach((edge) => {
+            if (!set.has(edge.target)) {
+                set.add(edge.target)
+            }
+        })
+        option.series[0].data.forEach((node) => {
+            if (set.has(node.name)) {
+                if (node.category !== -1) {
+                    node.tempCategory = node.category
+                }
+                node.category = -1
+            } else {
+                if (node.category === -1) {
+                    node.category = node.tempCategory
+                }
+                delete node.tempCategory
+            }
+        })
+        chartInstance.setOption(option)
     }
 }
 

@@ -19,6 +19,12 @@ body, #app {
   overflow: hidden;
 }
 
+.app-echarts-tooltip{
+  padding: 0px !important;
+  overflow: hidden;
+  background-color: #fff !important;
+}
+
 .el-drawer__body {
   background-color: var(--sidebar-background-color);
   color: var(--sidebar-color);
@@ -42,13 +48,13 @@ body, #app {
 }
 .el-popper.is-table {
   padding: 6px 12px;
-  background: var(--app-them-color);
+  background: var(--app-theme-color);
   color: var(--app-color);
   border: 1px solid rgba(var(--app-box-shadow-color), 0.2);
   box-shadow: 1px 2px 12px 0 rgba(var(--app-box-shadow-color), 0.05);
 }
 .el-popper.is-table .el-popper__arrow::before {
-  background: var(--app-them-color);
+  background: var(--app-theme-color);
   border-right: 1px solid rgba(var(--app-box-shadow-color), 0.2);
   border-bottom: 1px solid rgba(var(--app-box-shadow-color), 0.2);
   box-shadow: 6px 6px 12px 0 rgba(var(--app-box-shadow-color), 0.05);
@@ -57,8 +63,48 @@ body, #app {
 .el-anchor{
   background-color: transparent !important;
 }
-html.dark .el-input__wrapper{
-  background-color: #292929!important;
+.el-table-v2__main{
+  background-color: transparent !important;
+}
+.el-table-v2__header-cell{
+  background-color: transparent !important;
+}
+.el-table-v2__right{
+  background-color: transparent !important;
+  backdrop-filter: blur(10px);
+  border-right: 1px solid #e2e2e3;
+}
+.el-table-v2__header-row{
+  background-color: #f6f6f7;
+  border-top: 1px solid #e2e2e3;
+}
+.el-table-v2__row-cell, .el-table-v2__header-cell {
+  border: 1px solid #e2e2e3;
+  border-top-width: 0;
+  border-right-width: 0;
+}
+
+/* 暗色主题 */
+html.dark {
+  .app-echarts-tooltip{
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  .el-input__wrapper{
+    background-color: #292929!important;
+  }
+  .el-table-v2__header-row{
+    background-color: #202127;
+    border-top: 1px solid #2e2e32;
+  }
+  .el-table-v2__right{
+    border-right: 1px solid #2e2e32;
+  }
+  .el-table-v2__row-cell, .el-table-v2__header-cell {
+    border: 1px solid #2e2e32;
+    border-top-width: 0;
+    border-right-width: 0;
+  }
 }
 :root{
   --el-menu-base-level-padding: 10px !important;

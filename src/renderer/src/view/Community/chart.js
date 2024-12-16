@@ -60,6 +60,7 @@ class ChartTemplate {
             tooltip: {
                 show: true,
                 confine: true,
+                className: 'app-echarts-tooltip',
                 // alwaysShowContent: true,
                 formatter: function (params) {
                     const vnode = h(MdPreview, {
@@ -70,6 +71,7 @@ class ChartTemplate {
                     container.style.maxHeight = '500px'
                     container.style.whiteSpace = 'pre-wrap'
                     container.style.overflowY = 'scroll'
+                    container.style.padding = '5px 10px'
                     render(vnode, container)
                     return container
                 }

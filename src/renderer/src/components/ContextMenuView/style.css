@@ -6,7 +6,7 @@
     background-color: var(--titlebar-background-color);
     padding: 5px 0;
     border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    box-shadow: rgba(var(--app-box-shadow-color), 0.12) 0px 1px 3px, rgba(var(--app-box-shadow-color), 0.24) 0px 1px 2px;
     user-select: none;
     z-index: 1000;
 
@@ -33,7 +33,7 @@
         gap: 50px;
 
         &:hover {
-            background-color: var(--titlebar-hover-background-color);
+            background-color:var(--titlebar-menu-hover-background-color);
         }
 
         &:active {

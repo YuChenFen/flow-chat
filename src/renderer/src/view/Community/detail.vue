@@ -6,7 +6,9 @@
                 <el-text class="title">{{ data.description }}</el-text>
             </div>
             <div class="right">
-                <el-button type="primary" icon="Edit" @click="toEdit">转到编辑器</el-button>
+                <el-button type="primary" icon="Edit" size="small" @click="toEdit"
+                    >转到编辑器</el-button
+                >
             </div>
         </header>
         <main>
@@ -143,7 +145,7 @@ header {
         .title {
             padding: 0 10px;
             font-size: 1rem;
-            color: #333;
+            color: var(--app-color);
             font-weight: 600;
             position: relative;
             white-space: nowrap;
@@ -154,14 +156,14 @@ header {
                 left: 0;
                 height: 100%;
                 width: 2px;
-                background-color: #333;
+                background-color: var(--app-color);
                 transform: rotateZ(10deg);
             }
         }
     }
 
     .right {
-        padding: 0 5px;
+        padding: 0 10px;
     }
 }
 

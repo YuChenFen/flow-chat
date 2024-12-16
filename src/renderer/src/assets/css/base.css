@@ -17,7 +17,7 @@ html {
 
   --app-hover-color: #e7e7e7;
   --app-color: #494949;
-  --app-them-color: #ffffff;
+  --app-theme-color: #ffffff;
   --app-flow-line-color: 203, 213, 255;
 }
 
@@ -36,7 +36,7 @@ html.dark {
 
   --app-hover-color: #79797970;
   --app-color: #ffffffcf;
-  --app-them-color: #141414;
+  --app-theme-color: #141414;
   --app-flow-line-color: 255, 255, 255, 0.15;
 }
 
