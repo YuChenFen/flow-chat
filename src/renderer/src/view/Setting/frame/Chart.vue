@@ -34,7 +34,7 @@
                 >
                     <el-option label="力引导布局" value="force" />
                     <el-option label="环形布局" value="circular" />
-                    <!-- <el-option label="无布局" value="none" /> -->
+                    <el-option label="无布局" value="none" />
                 </el-select>
             </div>
             <div class="card">

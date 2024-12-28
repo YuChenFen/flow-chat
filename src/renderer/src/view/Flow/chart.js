@@ -204,7 +204,8 @@ class Chart {
                         }
                     }
                 }
-            }
+            },
+            animation: false
         }
         this.setOption(option)
     }
@@ -972,11 +973,13 @@ class Chart {
      * @return {array} 数据坐标
      */
     convertFromPixel(x, y) {
-        const porin = this.chart.convertFromPixel({ seriesIndex: 0 }, [x, y])
-        return {
-            x: porin[0],
-            y: porin[1]
-        }
+        return { x, y }
+        // 原生方式在添加关系时有问题
+        // const porin = this.chart.convertFromPixel({ seriesIndex: 0 }, [x, y])
+        // return {
+        //     x: porin[0],
+        //     y: porin[1]
+        // }
     }
     /**
      * 数据坐标转像素坐标
@@ -990,6 +993,14 @@ class Chart {
             x: porin[0],
             y: porin[1]
         }
+    }
+
+    /**
+     * 获取节点坐标数据
+     * @return {array} 节点坐标数据
+     */
+    getLayout() {
+        return this.chart._chartsViews[0]._symbolDraw._data._itemLayouts
     }
 
     /**

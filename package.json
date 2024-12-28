@@ -19,34 +19,6 @@
     "build:all": "npm run build && electron-builder -mwl",
     "publish": "electron-builder --publish always"
   },
-  "build": {
-    "appId": "flow.chat",
-    "win": {
-      "icon": "./resources/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true
-    },
-    "publish":[
-      {
-        "provider": "github",
-        "owner": "YuChenFen",
-        "repo": "flow-chat",
-        "updaterCacheDirName": "electron-flow-chat-updater",
-        "releaseType": "release"
-      }
-    ]
-  },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",

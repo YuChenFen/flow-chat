@@ -36,7 +36,8 @@ import CategoryDrawer from '../drawer/CategoryDrawer.vue'
 import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import ContextMenuView from '../../../components/ContextMenuView/ContextMenuView.vue'
 import Chart from '../chart.js'
-defineProps({
+import config from '../../../assets/js/config.js'
+const props = defineProps({
     x: {
         type: Number,
         required: true
@@ -82,6 +83,17 @@ const dataArray = [
             },
             {
                 label: '修改类别'
+            },
+            {
+                label: '整体类别大小',
+                list: [
+                    {
+                        label: '放大'
+                    },
+                    {
+                        label: '缩小'
+                    }
+                ]
             }
         ]
     },
@@ -89,6 +101,17 @@ const dataArray = [
         label: '收起全部节点'
     }
 ]
+
+if (config.chart.layout === 'force') {
+    dataArray.push({
+        label: '更多选项',
+        list: [
+            {
+                label: '设置固定坐标'
+            }
+        ]
+    })
+}
 function onClick(item) {
     close()
     if (item.label === '添加节点') {
@@ -129,16 +152,36 @@ function onClick(item) {
             }
         })
         chartInstance.setOption(option)
+    } else if (item.label === '设置固定坐标') {
+        const option = chartInstance.getOption()
+        const layout = chartInstance.getLayout()
+        layout.map((item, index) => {
+            option.series[0].data[index].x = item[0]
+            option.series[0].data[index].y = item[1]
+        })
+        chartInstance.setOption(option)
+    } else if (item.label === '放大') {
+        const option = chartInstance.getOption()
+        option.series[0].categories.forEach((item) => {
+            item.symbolSize = Math.floor(item.symbolSize * 2)
+        })
+        chartInstance.setOption(option)
+    } else if (item.label === '缩小') {
+        const option = chartInstance.getOption()
+        option.series[0].categories.forEach((item) => {
+            item.symbolSize = Math.floor(item.symbolSize / 2)
+        })
+        chartInstance.setOption(option)
     }
 }
 
 function addNode() {
     // echarts 调用后关系线位置错误
-    // if (config.chart.layout === 'none') {
-    //     const { x, y } = chartInstance.convertFromPixel(props.tx, props.ty)
-    //     nodeFrom.x = x
-    //     nodeFrom.y = y
-    // }
+    if (config.chart.layout === 'none') {
+        const { x, y } = chartInstance.convertFromPixel(props.tx, props.ty)
+        nodeFrom.x = x
+        nodeFrom.y = y
+    }
     chartInstance.addNode({ ...nodeFrom })
 }
 function addEdge() {

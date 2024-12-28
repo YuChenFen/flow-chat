@@ -49,6 +49,7 @@ import NodeContextMenu from './contextMenu/NodeContextMenu.vue'
 import EdgeContextMenu from './contextMenu/EdgeContextMenu.vue'
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useFlowStore } from '../../store/flowStore.js'
+import config from '../../assets/js/config.js'
 const contextmenuX = ref(-1)
 const contextmenuY = ref(-1)
 const contextmenuTX = ref(-1)
@@ -75,9 +76,16 @@ onMounted(() => {
     }
     chartInstance.chart.on('dblclick', chartdbClick)
     chartInstance.chart.on('contextmenu', chartContextmenu)
+    chartInstance.chart.on('mouseup', chartMouseup)
     chartInstance.chart.getZr().on('contextmenu', onContextmenu)
 })
 
+function chartMouseup(e) {
+    if (e.dataType === 'node' && config.chart.layout === 'none') {
+        e.data.x = e.event.event.x
+        e.data.y = e.event.event.y
+    }
+}
 function chartdbClick(e) {
     if (e.dataType === 'node') {
         modifyNode(e)
