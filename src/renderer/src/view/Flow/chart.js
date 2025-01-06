@@ -37,13 +37,13 @@ class Chart {
         }
 
         const categories = [
-            {
-                name: '无类别',
-                symbolSize: 50,
-                itemStyle: {
-                    color: '#86b1fe'
-                }
-            }
+            // {
+            //     name: '无类别',
+            //     symbolSize: 50,
+            //     itemStyle: {
+            //         color: '#86b1fe'
+            //     }
+            // }
         ]
 
         const option = {
