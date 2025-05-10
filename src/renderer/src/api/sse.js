@@ -1,4 +1,5 @@
 import { $post } from './index'
+const baseUrl = import.meta.env.VITE_API_BASE_URL
 
 const eventNames = ['SSE: message-text', 'SSE: message-chartRoom']
 
@@ -9,7 +10,7 @@ class SSEEvents {
     }
     static init() {
         const token = sessionStorage.getItem('token')
-        fetch('http://localhost:8008/v1/db/message/link', {
+        fetch(`${baseUrl}/db/message/link`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'text/event-stream',

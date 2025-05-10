@@ -2,25 +2,24 @@
     <div class="container">
         <div class="back">
             <div class="card">
+                <div class="controls-button" close @click="close">
+                    <svg t="1709375294946" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M217.82708 851.418089m-22.627417-22.627417l0 0q-22.627417-22.627417 0-45.254834l588.312842-588.312842q22.627417-22.627417 45.254834 0l0 0q22.627417 22.627417 0 45.254834l-588.312842 588.312842q-22.627417 22.627417-45.254834 0Z">
+                        </path>
+                        <path
+                            d="M172.572246 217.850413m22.627417-22.627417l0 0q22.627417-22.627417 45.254834 0l588.312842 588.312842q22.627417 22.627417 0 45.254834l0 0q-22.627417 22.627417-45.254834 0l-588.312842-588.312842q-22.627417-22.627417 0-45.254834Z">
+                        </path>
+                    </svg>
+                </div>
                 <div class="card-main" :type="type">
                     <h1>{{ typeText }}</h1>
                     <p>{{ describeText }}</p>
                     <div class="form">
-                        <input
-                            v-model="account"
-                            type="text"
-                            placeholder="账号"
-                            name="account"
-                            @keydown.enter="passwordFocus"
-                        />
-                        <input
-                            ref="passwordRef"
-                            v-model="password"
-                            type="password"
-                            placeholder="密码"
-                            name="password"
-                            @keydown.enter="submit"
-                        />
+                        <input v-model="account" type="text" placeholder="账号" name="account"
+                            @keydown.enter="passwordFocus" />
+                        <input ref="passwordRef" v-model="password" type="password" placeholder="密码" name="password"
+                            @keydown.enter="submit" />
                     </div>
                     <button type="submit" :disabled="disabled" @click="submit">
                         <span class="loader"></span>
@@ -105,6 +104,10 @@ async function submit() {
 function passwordFocus() {
     passwordRef.value?.focus()
 }
+
+function close() {
+    window.electron.ipcRenderer.send('close')
+}
 </script>
 
 <style scoped>
@@ -120,14 +123,17 @@ function passwordFocus() {
     &::before {
         background-image: linear-gradient(90deg, #53e9d9, #53e9d9 70%, transparent);
     }
+
     .card {
         animation: twinkle-login 5000ms infinite linear;
     }
 }
+
 .back:has(.card-main[type='register']) {
     &::before {
         background-image: linear-gradient(90deg, #f97d3e, #f97d3e 70%, transparent);
     }
+
     .card {
         animation: twinkle-register 5000ms infinite linear;
     }
@@ -188,6 +194,7 @@ function passwordFocus() {
     50% {
         box-shadow: #53e9d914 0px 5px 15px;
     }
+
     100% {
         box-shadow: #53e9d946 0px 5px 15px;
     }
@@ -201,6 +208,7 @@ function passwordFocus() {
     50% {
         box-shadow: #f97d3e14 0px 5px 15px;
     }
+
     100% {
         box-shadow: #f97d3e46 0px 5px 15px;
     }
@@ -212,13 +220,16 @@ function passwordFocus() {
     .card-main[type='login'] {
         left: 34%;
         box-shadow: #02b6d693 -3px 0px 5px;
+
         h1,
         p {
             background-image: linear-gradient(110deg, #02b5d6, 45%, #04d9ff, 55%, #02b5d6);
         }
+
         input {
             border: #02b5d6 1px solid;
             color: #02b5d6;
+
             &:focus {
                 box-shadow: #02b5d6 0px 0px 5px;
             }
@@ -227,6 +238,7 @@ function passwordFocus() {
                 color: #02b5d6;
             }
         }
+
         button[type='submit'] {
             background-color: #02b5d6;
 
@@ -243,16 +255,20 @@ function passwordFocus() {
             }
         }
     }
+
     .card-main[type='register'] {
         left: 0;
         box-shadow: #d3602693 3px 0px 5px;
+
         h1,
         p {
             background-image: linear-gradient(110deg, #d36026, 45%, #ff5500, 55%, #d36026);
         }
+
         input {
             border: #d36026 1px solid;
             color: #d36026;
+
             &:focus {
                 box-shadow: #d36026 0px 0px 5px;
             }
@@ -261,6 +277,7 @@ function passwordFocus() {
                 color: #d36026;
             }
         }
+
         button[type='submit'] {
             background-color: #d36026;
 
@@ -277,6 +294,7 @@ function passwordFocus() {
             }
         }
     }
+
     .card-main {
         position: absolute;
         height: 100%;
@@ -423,6 +441,7 @@ button[disabled] .loader {
             0 -0.83em 0 -0.46em,
             0 -0.83em 0 -0.477em;
     }
+
     5%,
     95% {
         box-shadow:
@@ -432,6 +451,7 @@ button[disabled] .loader {
             0 -0.83em 0 -0.46em,
             0 -0.83em 0 -0.477em;
     }
+
     10%,
     59% {
         box-shadow:
@@ -441,6 +461,7 @@ button[disabled] .loader {
             -0.256em -0.789em 0 -0.46em,
             -0.297em -0.775em 0 -0.477em;
     }
+
     20% {
         box-shadow:
             0 -0.83em 0 -0.4em,
@@ -449,6 +470,7 @@ button[disabled] .loader {
             -0.671em -0.488em 0 -0.46em,
             -0.749em -0.34em 0 -0.477em;
     }
+
     38% {
         box-shadow:
             0 -0.83em 0 -0.4em,
@@ -457,6 +479,7 @@ button[disabled] .loader {
             -0.775em -0.297em 0 -0.46em,
             -0.82em -0.09em 0 -0.477em;
     }
+
     100% {
         box-shadow:
             0 -0.83em 0 -0.4em,
@@ -471,8 +494,28 @@ button[disabled] .loader {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
+    }
+}
+
+.controls-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+
+    & svg {
+        fill: #000;
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover>svg {
+        fill: #ff2929e0;
     }
 }
 </style>

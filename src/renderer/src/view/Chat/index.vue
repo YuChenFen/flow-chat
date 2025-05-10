@@ -1,81 +1,42 @@
 <template>
     <div style="width: 100%; height: 100%; display: flex">
-        <div
-            style="
+        <div style="
                 flex: 0 0 200px;
                 border-right: 1px solid #ccc;
                 display: flex;
                 flex-direction: column;
-            "
-        >
+            ">
             <div class="list-title" style="flex: 0 0 2.5rem">
                 <el-text>对话列表</el-text>
-                <el-button size="small" type="primary" plain @click="openAddChat"
-                    >新建对话</el-button
-                >
+                <el-button size="small" type="primary" plain @click="openAddChat">新建对话</el-button>
             </div>
             <div style="flex: 1; overflow: auto; padding-bottom: 100px">
-                <UserItem
-                    v-for="(chat, index) in chatList"
-                    :key="index"
-                    v-model:current-chat="currentChat"
-                    :chat="chat"
-                    @contextmenu="showChatItemContextMenu(chat, $event)"
-                >
+                <UserItem v-for="(chat, index) in chatList" :key="index" v-model:current-chat="currentChat" :chat="chat"
+                    @contextmenu="showChatItemContextMenu(chat, $event)">
                 </UserItem>
             </div>
         </div>
         <div class="chat-container">
-            <ChatLayout
-                v-if="currentChat"
-                v-model:current-chat="currentChat"
-                :chat-massage="chatMassage"
-                :is-loading="isLoading"
-            ></ChatLayout>
+            <ChatLayout v-if="currentChat" v-model:current-chat="currentChat" :chat-massage="chatMassage"
+                :is-loading="isLoading"></ChatLayout>
             <div v-else class="chat-container-empty">
-                <svg
-                    style="width: 30%; height: 30%"
-                    viewBox="0 0 1024 1024"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    p-id="2680"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                >
-                    <path
-                        d="M214.773 661.358l311.01-153.981 28.396 57.355-311.01 153.98z"
-                        fill="#B4C1F9"
-                        p-id="2681"
-                    ></path>
+                <svg style="width: 30%; height: 30%" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="2680" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <path d="M214.773 661.358l311.01-153.981 28.396 57.355-311.01 153.98z" fill="#B4C1F9" p-id="2681">
+                    </path>
                     <path
                         d="M562.63 558.63l-45.26-45.26a30.9 30.9 0 0 0-5 6.52c6.15-11.15 94.82-190.91 152.92-309l57.42 28.24c-0.38 0.78-38.44 78.16-76.26 154.79-22.23 45-40 81-52.89 106.89-26.56 53.43-26.56 53.43-30.93 57.82z"
-                        fill="#B4C1F9"
-                        p-id="2682"
-                    ></path>
-                    <path
-                        d="M517.412 558.684l45.168-45.342 258.993 258-45.168 45.342z"
-                        fill="#B4C1F9"
-                        p-id="2683"
-                    ></path>
-                    <path
-                        d="M540.5 536.5m-180.5 0a180.5 180.5 0 1 0 361 0 180.5 180.5 0 1 0-361 0Z"
-                        fill="#7287FD"
-                        p-id="2684"
-                    ></path>
-                    <path
-                        d="M693.5 225.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
-                        fill="#68D2C8"
-                        p-id="2685"
-                    ></path>
-                    <path
-                        d="M799.5 795.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
-                        fill="#7287FD"
-                        p-id="2686"
-                    ></path>
-                    <path
-                        d="M227.5 691.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z"
-                        fill="#FDC005"
-                        p-id="2687"
-                    ></path>
+                        fill="#B4C1F9" p-id="2682"></path>
+                    <path d="M517.412 558.684l45.168-45.342 258.993 258-45.168 45.342z" fill="#B4C1F9" p-id="2683">
+                    </path>
+                    <path d="M540.5 536.5m-180.5 0a180.5 180.5 0 1 0 361 0 180.5 180.5 0 1 0-361 0Z" fill="#7287FD"
+                        p-id="2684"></path>
+                    <path d="M693.5 225.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z" fill="#68D2C8"
+                        p-id="2685"></path>
+                    <path d="M799.5 795.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z" fill="#7287FD"
+                        p-id="2686"></path>
+                    <path d="M227.5 691.5m-124.5 0a124.5 124.5 0 1 0 249 0 124.5 124.5 0 1 0-249 0Z" fill="#FDC005"
+                        p-id="2687"></path>
                 </svg>
             </div>
             <div v-show="currentChat" class="input-container">
@@ -86,28 +47,19 @@
                     @keypress.enter="send"
                 />
                 <el-button type="primary" size="large" @click="send">发送</el-button> -->
-                <chatTextarea
-                    v-model="inputValue"
-                    placeholder="请输入问题"
-                    @keypress="
-                        ($event) => {
-                            if ($event.ctrlKey && $event.keyCode === 10) {
-                                send()
-                            }
+                <chatTextarea v-model="inputValue" placeholder="请输入问题" @keypress="
+                    ($event) => {
+                        if ($event.ctrlKey && $event.keyCode === 10) {
+                            send()
                         }
-                    "
-                    @send="send"
-                ></chatTextarea>
+                    }
+                " @send="send"></chatTextarea>
             </div>
         </div>
         <teleport to="body">
-            <ChatItemContextMenu
-                v-model:x="chatItemContextMenuX"
-                v-model:y="chatItemContextMenuY"
-                v-model:chat-list="chatList"
-                v-model:current-chat="currentChat"
-                :select-chat="selectChatItem"
-            ></ChatItemContextMenu>
+            <ChatItemContextMenu v-model:x="chatItemContextMenuX" v-model:y="chatItemContextMenuY"
+                v-model:chat-list="chatList" v-model:current-chat="currentChat" :select-chat="selectChatItem">
+            </ChatItemContextMenu>
         </teleport>
     </div>
 </template>
@@ -192,6 +144,10 @@ function openAddChat() {
         let chat
         if (modelType.value === '用户') {
             try {
+                // 判断是否包含英文字母
+                if (/[a-zA-Z]/.test(modelUserAccount.value)) {
+                    modelUserAccount.value = `"${modelUserAccount.value}"`
+                }
                 const { id, userAvatar, userName } = await queryUser(
                     ['id', 'userAvatar', 'userName'],
                     `userAccount=${modelUserAccount.value}`
@@ -303,6 +259,7 @@ async function getTemplate(type, messages, template) {
                 100,
                 config.llm.retriever.weight
             )
+            console.log(data)
             if (config.llm.retriever.rerank.enable) {
                 data.nodes_results = await retrieverRerank(data.nodes_results, query, 100)
                 data.edges_results = await retrieverRerank(data.edges_results, query, 100)
@@ -402,6 +359,7 @@ async function sendAI() {
         }
     }
 }
+
 html.dark .chat-container {
     background-image: linear-gradient(120deg, #2f2932 0%, #121c2d 100%);
 }
